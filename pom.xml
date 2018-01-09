@@ -11,6 +11,11 @@
     <artifactId>renjin-script-engine</artifactId>
     <version>RELEASE</version>
   </dependency>
+  <dependency>
+    <groupId>org.renjin.cran</groupId>
+    <artifactId>rpart</artifactId>
+    <version>4.1-11-b27</version>
+  </dependency>
 </dependencies>
 
 <repositories>
@@ -19,6 +24,7 @@
     <name>bedatadriven public repo</name>
     <url>https://nexus.bedatadriven.com/content/groups/public/</url>
   </repository>
+  
 </repositories>
 
 </project>
