@@ -48,10 +48,15 @@ public class test {
 		engine.eval("library(rpart)"); //load the package
 		engine.eval("fit <- rpart(Species ~ ., data=train)");*/
 		
-		WekaDecisionTree treeWeka = new WekaDecisionTree("src/main/resources/iris.arff");
+		System.out.println("*************************************************\n");
+		
+		WekaDecisionTree treeWeka = new WekaDecisionTree("src/main/resources/iris.csv", true);
 		J48 model = treeWeka.fit((float)0.7);
 		
 		treeWeka.predict(model);
+		
+		System.out.println("*************************************************\n");
+		System.out.println(treeWeka.getTest());
 	
 	    
 	  }
