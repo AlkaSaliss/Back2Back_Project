@@ -51,8 +51,9 @@ public class RDecisionTree {
 		engine.eval("set.seed(123)");
 		engine.eval("data <- data[sample(1:nrow(data)), ]");
 		
-		engine.eval("n=2*floor(nrow(data)/3)");
-		engine.eval("train=data[1:n,]");
+		/*engine.eval("n=2*floor(nrow(data)/3)");
+		engine.eval("train=data[1:n,]");*/
+		trainTestSplit(0.7f);
 		
 		//load the package for decision tree modeling
 		engine.eval("library(rpart)"); 
@@ -68,7 +69,7 @@ public class RDecisionTree {
 		
 		//TODO
 		
-		engine.eval("test <- na.omit(data[n+1:nrow(data),])");
+		//engine.eval("test <- na.omit(data[n+1:nrow(data),])");
 		/*
 		 * Prediction
 		 */
@@ -93,48 +94,18 @@ public class RDecisionTree {
 		
 	}
 	
+	public void trainTestSplit(float trainPercent) throws ScriptException {
+		
+		engine.eval("set.seed(123)");
+		engine.eval("data <- data[sample(1:nrow(data)), ]");
+		
+		engine.eval("trainSize = floor(nrow(data)*" + trainPercent + ")");
+		engine.eval("train=data[1:trainSize,]");
+		engine.eval("test <- na.omit(data[trainSize+1:nrow(data),])");
+	}
 	
 	
-	public static void main(String[] args) throws Exception {
-	   
-		//create the tree object
-		RDecisionTree tree = new RDecisionTree("Species~.", "class", 5);
-		tree.fit("\"src/main/resources/iris.csv\"");
-		tree.predict();
-		
-		
-		// create a script engine manager:
-	   /* RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
-	    // create a Renjin engine:
-	    RenjinScriptEngine engine = factory.getScriptEngine();
-
-	    engine.eval("dat <- data.frame(x=1:10, y=(1:10)+rnorm(n=10))");
-	    engine.eval("print(typeof(dat))");*/
-	    
-	 /*   String chemin = "\"src/main/resources/iris.csv\"";
-	    engine.eval("data <- read.csv(" + chemin + ", header=T, row.names=1)");*/
-	    //engine.eval("print(data)");
-	  //  engine.eval("print(lm(y ~ x, df))");
-	   /* engine.eval("rg <- lm(y ~ x, dat)");
-	    
-	    //engine.eval("install.packages(\"rpart\")");
-		engine.eval("library(rpart)");
-	    
-	   // ListVector vect = (ListVector) engine.get("rg");
-	  // System.out.println(engine.get("rg$residuals"));
-	  // List<String> test = List
-	    //System.out.println( vect);
-	   // System.out.println(engine.eval(vect.toString()));
-	    
-	   //System.out.println( df.class);
-	    
-		System.out.println( engine.eval("packageVersion(\"rpart\")"));*/
-		
-		/*engine.eval("n=2*floor(nrow(data)/3)");
-		engine.eval("train=data[1:n,]");
-		engine.eval("library(rpart)"); //load the package
-		engine.eval("fit <- rpart(Species ~ ., data=train)");*/
-	    
-	  }
+	
+	
 
 }
