@@ -10,13 +10,21 @@ public class RDecisionTree {
 	 * Defining the Renjin 
 	 */
 	// create a script engine manager:
-    RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
+    /*RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
     // create a Renjin engine:
-    RenjinScriptEngine engine = factory.getScriptEngine();
+    RenjinScriptEngine engine = factory.getScriptEngine();*/
     
 	
 	public RDecisionTree() {
 		// TODO Auto-generated constructor stub
+		
 	}
+
+		  public static void main (String args[])throws Exception{
+			  RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
+			    // create a Renjin engine:
+			   
+		  }
+		
 
 }
