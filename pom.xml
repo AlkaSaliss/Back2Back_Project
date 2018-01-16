@@ -27,6 +27,13 @@
     <artifactId>partykit</artifactId>
     <version>1.2-0-b2</version>
   </dependency>
+  
+  <dependency>
+    <groupId>nz.ac.waikato.cms.weka</groupId>
+    <artifactId>weka-stable</artifactId>
+    <version>3.8.0</version>
+</dependency>
+  
 </dependencies>
 
 <repositories>
