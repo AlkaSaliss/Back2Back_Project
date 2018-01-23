@@ -1,3 +1,4 @@
+package fr.ensai.sparkml;
 import java.io.Serializable;
 import java.util.Map;
 
