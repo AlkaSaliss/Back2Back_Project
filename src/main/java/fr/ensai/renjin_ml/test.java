@@ -1,5 +1,11 @@
 package fr.ensai.renjin_ml;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.renjin.sexp.DoubleArrayVector;
+import org.renjin.sexp.ListVector;
+
 import weka.classifiers.trees.J48;
 
 public class test {
@@ -56,7 +62,14 @@ public class test {
 		treeWeka.predict(model);
 		
 		System.out.println("*************************************************\n");
-		System.out.println(treeWeka.getTest());
+		//System.out.println(treeWeka.getTest());
+		
+		System.out.println("*************************************************\n");
+		//System.out.println(tree.getEngine().eval("print(train)"));
+		//double a = ((DoubleArrayVector) tree.getEngine().eval("accuracy")).asReal();
+		ListVector a =  (ListVector) tree.getEngine().eval("pred");
+				
+		System.out.println(a.asReal());
 	
 	    
 	  }

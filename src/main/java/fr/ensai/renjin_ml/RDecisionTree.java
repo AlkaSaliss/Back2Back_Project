@@ -97,11 +97,60 @@ public class RDecisionTree {
 	public void trainTestSplit(float trainPercent) throws ScriptException {
 		
 		engine.eval("set.seed(123)");
-		engine.eval("data <- data[sample(1:nrow(data)), ]");
+		float prob0 = 1-trainPercent;
+		float prob1=trainPercent;
+		engine.eval("isTrain <- sample(c(0,1), size=nrow(data), replace=T, prob=c("+prob0+","+prob1+ "))");
+		engine.eval("data$isTrain <- isTrain");
+		engine.eval("train=data[data$isTrain==1, -ncol(data)]");
+		engine.eval("test=data[data$isTrain==0, -ncol(data)]");
 		
-		engine.eval("trainSize = floor(nrow(data)*" + trainPercent + ")");
-		engine.eval("train=data[1:trainSize,]");
-		engine.eval("test <- na.omit(data[trainSize+1:nrow(data),])");
+		
+		
+		//engine.eval("trainSize = floor(nrow(data)*" + trainPercent + ")");
+		//engine.eval("train=data[1:trainSize,]");
+		//engine.eval("test <- na.omit(data[trainSize+1:nrow(data),])");
+		//engine.eval("test <- data[trainSize+1:nrow(data),-ncol(data)]");
+		//engine.eval("test <- data[trainSize+1:nrow(data),-ncol(data)]");
+	}
+
+	public String getFormula() {
+		return formula;
+	}
+
+	public void setFormula(String formula) {
+		this.formula = formula;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public int getCol_Y() {
+		return col_Y;
+	}
+
+	public void setCol_Y(int col_Y) {
+		this.col_Y = col_Y;
+	}
+
+	public RenjinScriptEngineFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(RenjinScriptEngineFactory factory) {
+		this.factory = factory;
+	}
+
+	public RenjinScriptEngine getEngine() {
+		return engine;
+	}
+
+	public void setEngine(RenjinScriptEngine engine) {
+		this.engine = engine;
 	}
 	
 	
