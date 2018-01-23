@@ -1,48 +1,76 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.ensai</groupId>
-  <artifactId>Back2Back_Project</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  
-  <dependencies>
-  <dependency>
-    <groupId>org.renjin</groupId>
-    <artifactId>renjin-script-engine</artifactId>
-    <version>RELEASE</version>
-  </dependency>
-  <dependency>
-    <groupId>org.renjin.cran</groupId>
-    <artifactId>rpart</artifactId>
-    <version>4.1-11-b27</version>
-  </dependency>
-  
-  <dependency>
-    <groupId>org.renjin.cran</groupId>
-    <artifactId>dplyr</artifactId>
-    <version>0.7.4-b73</version>
-  </dependency>
-  <dependency>
-    <groupId>org.renjin.cran</groupId>
-    <artifactId>partykit</artifactId>
-    <version>1.2-0-b2</version>
-  </dependency>
-  
-  <dependency>
-    <groupId>nz.ac.waikato.cms.weka</groupId>
-    <artifactId>weka-stable</artifactId>
-    <version>3.8.0</version>
-</dependency>
-  
-</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.ensai</groupId>
+	<artifactId>Back2Back_Project</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 
-<repositories>
-  <repository>
-    <id>bedatadriven</id>
-    <name>bedatadriven public repo</name>
-    <url>https://nexus.bedatadriven.com/content/groups/public/</url>
-  </repository>
-  
-</repositories>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-mllib -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-mllib_2.10</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.databricks</groupId>
+			<artifactId>spark-csv_2.10</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.renjin</groupId>
+			<artifactId>renjin-script-engine</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.renjin.cran</groupId>
+			<artifactId>rpart</artifactId>
+			<version>4.1-11-b27</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.renjin.cran</groupId>
+			<artifactId>dplyr</artifactId>
+			<version>0.7.4-b73</version>
+		</dependency>
+		<dependency>
+			<groupId>org.renjin.cran</groupId>
+			<artifactId>partykit</artifactId>
+			<version>1.2-0-b2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-stable</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>bedatadriven</id>
+			<name>bedatadriven public repo</name>
+			<url>https://nexus.bedatadriven.com/content/groups/public/</url>
+		</repository>
+
+	</repositories>
+
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.6.1</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 
 </project>
