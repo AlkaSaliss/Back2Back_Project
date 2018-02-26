@@ -1,5 +1,6 @@
 package fr.ensai.sparkml;
 import java.awt.Label;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,14 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.ml.feature.StringIndexer;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
+import org.apache.spark.mllib.linalg.DenseVector;
 
 public class main {
 
@@ -20,6 +25,11 @@ public class main {
 		
 //		SparkConf sparkConf = new SparkConf().setAppName("SparkDecisionTree").setMaster("local");
 //		JavaSparkContext sc = new JavaSparkContext(sparkConf);
+	
+//		Model data = new Model();
+//		data.setRawDatafromCSV("toto.csv");
+		
+//		compare("RF", data, new );
 		
 		SparkSession session = SparkSession.getInstance();
 		JavaSparkContext sc = session.getSc();
@@ -36,6 +46,7 @@ public class main {
 		System.out.println(data.first());
 		
 		SQLContext a = new SQLContext(sc);
+		
 		JavaRDD<Row> test = a.read()
 				.format("com.databricks.spark.csv")
 				.option("inferSchema", "true")
@@ -60,7 +71,11 @@ public class main {
 		
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
+			    	int rowsize =  line.length();
 			    	String label = line.getString(line.length() - 1);
+			    	String target = line.getAs("Species");
+			    	int indextarget = line.fieldIndex("Species");
+			    	System.out.println(target);
 			    	Double Catlabel;
 			    	if (label.equals("virginica")) {
 			    		Catlabel = 2d;
@@ -71,7 +86,26 @@ public class main {
 			    	else {
 			    		Catlabel = 0d;
 			    	}
-			        return new LabeledPoint(Catlabel, Vectors.dense(line.getDouble(1), line.getDouble(2), line.getDouble(3), line.getDouble(4)));
+			    	
+			    	Map<String, Double> catmap = new HashMap<>();
+			    	if(catmap.containsKey(target)) {
+			    		Catlabel = catmap.get(target);
+			    	}
+			    	else {
+			    		catmap.put(target, (double)catmap.size());
+			    	}
+			    	
+			        //return new LabeledPoint(Catlabel, Vectors.dense(line.getDouble(1), line.getDouble(2), line.getDouble(3), line.getDouble(4)));
+			    	double[] col = new double[rowsize-1];
+			    	int j = 0;
+			    	for(int i=1; i<rowsize; i++) {
+			    		if(i != indextarget) {
+			    			col[j] = (double)line.getDouble(i);
+			    			j++;
+			    		}
+			    	}
+			    	LabeledPoint labelpt = new LabeledPoint(Catlabel, Vectors.dense(col));
+			    	return labelpt;
 			    });
 		
 		
