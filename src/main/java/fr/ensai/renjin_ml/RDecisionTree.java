@@ -39,11 +39,15 @@ public class RDecisionTree {
 		
 	}
 	
-	public void fit(String dataPath) throws ScriptException {
+	public void fit(String dataPath, boolean hasRowname) throws ScriptException {
 		/*
 		 * loading the file
 		 */
+		if (hasRowname) {
 		engine.eval("data <- as.data.frame(read.csv("+dataPath+", header=T, row.names=1))");
+		} else {
+			engine.eval("data <- as.data.frame(read.csv("+dataPath+", header=T, row.names=NULL))");
+		}
 		/*
 		 * Spliting data into training and test sets
 		 */

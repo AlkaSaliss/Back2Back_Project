@@ -13,7 +13,7 @@ import org.apache.spark.SparkConf;
 
 public class main {
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		// TODO Auto-generated method stub
 		
 		

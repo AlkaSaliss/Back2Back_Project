@@ -14,6 +14,7 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 
 import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.NumericToNominal;
 import weka.filters.unsupervised.attribute.Remove;
 
 
@@ -29,7 +30,7 @@ public class WekaDecisionTree {
 	
 	
 	
-	public WekaDecisionTree(String path, boolean hasRowName) throws Exception {
+	public WekaDecisionTree(String path, boolean hasRowName, boolean toNumeric) throws Exception {
 		this.datapath = path;
 		
 		//BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -55,6 +56,29 @@ public class WekaDecisionTree {
 		}
 		
 		
+		
+		
+		/*
+		 * Convert numeric target variable to categories
+		 * */
+		if (toNumeric) {
+		
+		NumericToNominal convert= new NumericToNominal();
+        String[] options= new String[2];
+        options[0]="-R"; //remove option 
+        options[1]= String.valueOf(this.data.numAttributes() ) ;
+        
+        convert.setOptions(options);
+        convert.setInputFormat(this.data);
+        this.data =Filter.useFilter(this.data, convert);
+        
+		}
+		
+		
+	}
+	
+	public int getAttributeIndex(String label) {
+		return this.data.attribute(label).index();
 	}
 	
 	public String getDatapath() {
