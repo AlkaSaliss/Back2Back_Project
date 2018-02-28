@@ -35,10 +35,11 @@ public class Data  implements Serializable {
 	String catTarget = "false"; //weka
 	String toNominal = "false"; //
 	
-	public Data(String path, String targetname, String header) {
+	public Data(String path, String targetname, String header, String hasRowNames) {
 		this.path = path;
 		this.targetname = targetname;
 		this.header = header;
+		this.hasRowNames = hasRowNames;
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class Data  implements Serializable {
 				.option("header", this.header)
 				.load(this.path).javaRDD();
 
-		
+		Map<String, Double> catmap = new HashMap<>();
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
 			    	int rowsize =  line.length();
@@ -63,7 +64,6 @@ public class Data  implements Serializable {
 			    	int indextarget = line.fieldIndex(this.targetname);
 			    	
 			    	Double Catlabel;
-			    	Map<String, Double> catmap = new HashMap<>();
 			    	if(catmap.containsKey(target)) {
 			    		Catlabel = catmap.get(target);
 			    	}
@@ -72,17 +72,18 @@ public class Data  implements Serializable {
 			    		Catlabel = catmap.get(target);
 			    	}
 			    	
-			     
-			    	double[] col = new double[rowsize-1];
+			    	
+			    	int n = rowsize-1;
+			    	
 			    	int j = 0;
 			    	
+			    	int start=0;
 			    	if(this.hasRowNames.equals("true")) {
-			    		int i=1;
+			    		start=1;
+			    		n--;
 			    	}
-			    	else {
-			    		int i = 0;
-			    	}
-			    	for(int i=1; i<rowsize; i++) {
+			    	double[] col = new double[n];
+			    	for(int i = start; i<rowsize; i++) {
 			    		if(i != indextarget) {
 			    			col[j] = (double)line.getDouble(i);
 			    			j++;
