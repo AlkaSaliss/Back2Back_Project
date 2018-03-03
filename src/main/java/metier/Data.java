@@ -33,12 +33,16 @@ public class Data  implements Serializable {
 	String dec = "."; //R
 	
 	String catTarget = "false"; //weka
-	String toNominal = "false"; //
+	String toNominal = "true"; //weka
 	
 	public Data(String path, String targetname, String header) {
 		this.path = path;
 		this.targetname = targetname;
 		this.header = header;
+	}
+	
+
+	public Data() {
 	}
 	
 	/**
@@ -98,10 +102,15 @@ public class Data  implements Serializable {
 	
 	public void readR(RenjinScriptEngine engine) throws ScriptException {
 		
-		String rownames = this.hasRowNames.toUpperCase()=="true" ? "1" : "NULL";
+		String rownames = this.hasRowNames.equalsIgnoreCase("true") ? "1" : "NULL";
 		
-		engine.eval("\"data <- read.csv(\"+path+\", header="+this.header.toUpperCase() +"," + sep + ", row.names="+rownames+")\"");
+		engine.eval("data <- read.csv(\""+this.path+"\", header="+this.header.toUpperCase() +", sep=" + this.sep + ", row.names="+rownames+")");
+		engine.eval("targetName <- \"" + this.targetname + "\"");
+		if (this.toNominal.toLowerCase() == "true") {
+			engine.eval("data[, targetName] <- as.factor(data[, targetName])");
+		}
 		
+		engine.eval("formula <- as.formula(paste(targetName, \"~ .\"))");
 	}
 	
 	public Instances readWeka() throws Exception {
@@ -117,7 +126,8 @@ public class Data  implements Serializable {
 		int targetIndex = data.attribute(this.targetname).index(); // target variable index
 		data.setClassIndex(targetIndex);
 		
-		if (this.hasRowNames.toUpperCase() == "TRUE") {
+		if (this.hasRowNames.equalsIgnoreCase("true")) {
+		
 			String[] options = new String[2];
 			 options[0] = "-R";                                    // "range"
 			 options[1] = "1";                                     // first attribute
@@ -133,23 +143,88 @@ public class Data  implements Serializable {
 		/*
 		 * Convert numeric target variable to categories
 		 * */
-		if (toNominal.toUpperCase()=="TRUE") {
+		if (this.toNominal.equalsIgnoreCase("true")) {
 		
 			NumericToNominal convert= new NumericToNominal();
 	        String[] options= new String[2];
 	        options[0]="-R";
-	        options[1]= String.valueOf(targetIndex) ;
+	       // options[1]= String.valueOf(data.numAttributes()) ;
+	        options[1]= String.valueOf(targetIndex+1) ;
 	        
 	        convert.setOptions(options);
 	        convert.setInputFormat(data);
-	        data =Filter.useFilter(data, convert);
+	        data = Filter.useFilter(data, convert);
+	   
 		}
 		
 		return data;
 		
 	}
-
 	
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
+
+	public String getTargetname() {
+		return targetname;
+	}
+
+	public void setTargetname(String targetname) {
+		this.targetname = targetname;
+	}
+
+	public String getHasRowNames() {
+		return hasRowNames;
+	}
+
+	public void setHasRowNames(String hasRowNames) {
+		this.hasRowNames = hasRowNames;
+	}
+
+	public String getSep() {
+		return sep;
+	}
+
+	public void setSep(String sep) {
+		this.sep = sep;
+	}
+
+	public String getDec() {
+		return dec;
+	}
+
+	public void setDec(String dec) {
+		this.dec = dec;
+	}
+
+	public String getCatTarget() {
+		return catTarget;
+	}
+
+	public void setCatTarget(String catTarget) {
+		this.catTarget = catTarget;
+	}
+
+	public String getToNominal() {
+		return toNominal;
+	}
+
+	public void setToNominal(String toNominal) {
+		this.toNominal = toNominal;
+	}
 	
 	
 }

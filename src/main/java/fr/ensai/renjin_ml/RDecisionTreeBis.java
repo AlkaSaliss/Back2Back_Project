@@ -10,7 +10,7 @@ import org.renjin.script.RenjinScriptEngine;
 import org.renjin.script.RenjinScriptEngineFactory;
 import org.renjin.sexp.ListVector;
 
-public class RDecisionTree {
+public class RDecisionTreeBis {
 
 	/*
 	 * Attributs de l'arbre
@@ -29,7 +29,7 @@ public class RDecisionTree {
 	
 	
 	
-	public RDecisionTree(String form, String method, int coly) {
+	public RDecisionTreeBis(String form, String method, int coly) {
 		
 		this.formula = form;
 		//this.dataPath = data;
