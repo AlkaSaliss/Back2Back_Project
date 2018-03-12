@@ -21,7 +21,7 @@ public class SparkDecisionTree extends SparkModel  implements Serializable{
 	private Integer maxBins;
 	//private static JavaSparkContext sc;
 	private DecisionTreeModel model;
-
+	
 	public SparkDecisionTree(JavaSparkContext sc, Data d, double propTrain) {
 		this.sc = sc;
 		this.setCompleteData(d);
@@ -40,30 +40,30 @@ public class SparkDecisionTree extends SparkModel  implements Serializable{
 	
 	@Override
 	public void fit() {
-		this.model = DecisionTree.trainClassifier(this.train, this.numClasses,
-				  this.categoricalFeaturesInfo, this.impurity, this.maxDepth, this.maxBins);
+		if(this.classif) {
+			this.model = DecisionTree.trainClassifier(this.train, this.numClasses,
+					  this.categoricalFeaturesInfo, this.impurity, this.maxDepth, this.maxBins);
+		}
+		else {
+			this.model = DecisionTree.trainRegressor(this.train,
+					  this.categoricalFeaturesInfo, this.impurity, this.maxDepth, this.maxBins);
+		}
 	}
 
 	@Override
 	public double eval() {
 		// TODO Auto-generated method stub
-		JavaPairRDD<Double, Double> predictionAndLabel = this.test.mapToPair(p -> new Tuple2<>(this.model.predict(p.features()), p.label()));
-		Double testErr = predictionAndLabel.filter(pl -> !pl._1().equals(pl._2())).count() / (double) this.test.count();
-		return 1-testErr;
-	}
-
-	@Override
-	public double runLoop(int iterations, double propTrain) {
-		// TODO Auto-generated method stub
-		double sum_eval = 0;
-		for(int i=0; i<=iterations; i++) {
-			this.split(propTrain);
-			//this.model = null;
-			this.fit();
-			sum_eval += this.eval();
+		if(this.classif) {
+			JavaPairRDD<Double, Double> predictionAndLabel = this.test.mapToPair(p -> new Tuple2<>(this.model.predict(p.features()), p.label()));
+			Double testErr = predictionAndLabel.filter(pl -> !pl._1().equals(pl._2())).count() / (double) this.test.count();
+			return 1-testErr;
 		}
-		return sum_eval/iterations;
+		else {
+			JavaPairRDD<Double, Double> predictionAndLabel =  this.test.mapToPair(p -> new Tuple2<>(this.model.predict(p.features()), p.label()));
+			double testMSE = predictionAndLabel.mapToDouble(pl -> {double diff = pl._1() - pl._2(); return diff * diff;}).mean();
+			return testMSE;
+		}
+		
 	}
 
-	
 }

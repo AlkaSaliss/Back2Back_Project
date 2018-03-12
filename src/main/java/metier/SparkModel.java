@@ -1,18 +1,23 @@
 package metier;
 
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.regression.LabeledPoint;
 
-public abstract class SparkModel extends Model{
+import scala.Tuple2;
+
+public abstract class SparkModel implements Model{
 	JavaRDD<LabeledPoint> completeDataSet;
 	JavaRDD<LabeledPoint> train; 
 	JavaRDD<LabeledPoint> test;
 	JavaSparkContext sc;
+	Boolean classif;
 	
 	@Override
 	public void setCompleteData(Data d) {
 		this.completeDataSet = d.readSpark(sc);
+		this.classif = d.classif;
 	}
 	
 	@Override
@@ -45,7 +50,6 @@ public abstract class SparkModel extends Model{
 	public void setTest(JavaRDD<LabeledPoint> test) {
 		this.test = test;
 	}
-
 	
 	
 }

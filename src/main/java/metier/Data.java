@@ -1,5 +1,6 @@
 package metier;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +36,17 @@ public class Data  implements Serializable {
 	String catTarget = "false"; //weka
 	String toNominal = "false"; //
 	
-	public Data(String path, String targetname, String header, String hasRowNames) {
+	Boolean classif = true;
+	
+	ArrayList<String> catFeaturesNames;
+	private Map<Integer, Integer> categoricalFeaturesInfo;
+	
+	public Data(String path, String targetname, String header, String hasRowNames, Boolean RegorNot) {
 		this.path = path;
 		this.targetname = targetname;
 		this.header = header;
 		this.hasRowNames = hasRowNames;
+		this.classif = RegorNot;
 	}
 	
 	/**
@@ -47,7 +54,7 @@ public class Data  implements Serializable {
      * 
      */
 
-	public JavaRDD<LabeledPoint> readSpark(JavaSparkContext sc){
+	public JavaRDD<LabeledPoint> readSpark_old(JavaSparkContext sc){
 		SQLContext sqlcontext = new SQLContext(sc);
 		
 		JavaRDD<Row> test = sqlcontext.read()
@@ -91,6 +98,61 @@ public class Data  implements Serializable {
 			    	}
 
 			    	LabeledPoint labelpt = new LabeledPoint(Catlabel, Vectors.dense(col));
+			    	return labelpt;
+			    });
+		return labeldata;
+	}
+	
+	public JavaRDD<LabeledPoint> readSpark(JavaSparkContext sc){
+		SQLContext sqlcontext = new SQLContext(sc);
+		
+		JavaRDD<Row> test = sqlcontext.read()
+				.format("com.databricks.spark.csv")
+				.option("inferSchema", "true")
+				.option("header", this.header)
+				.load(this.path).javaRDD();
+
+		Map<String, Double> catmap = new HashMap<>();
+		JavaRDD<LabeledPoint> labeldata = test
+			    .map((Row line) -> {
+			    	int rowsize =  line.length();
+			    	String target = line.getAs(this.targetname);
+			    	int indextarget = line.fieldIndex(this.targetname);
+			    	Double finalLabel;
+			    	if(this.classif) {
+			    		Double Catlabel;
+				    	if(catmap.containsKey(target)) {
+				    		Catlabel = catmap.get(target);
+				    	}
+				    	else {
+				    		catmap.put(target, (double)catmap.size());
+				    		Catlabel = catmap.get(target);
+				    	}
+				    	finalLabel = Catlabel;
+			    	}
+			    	else {
+			    		finalLabel = line.getDouble(indextarget);
+			    	}
+			    	
+			    	
+			    	int n = rowsize-1;
+			    	
+			    	int j = 0;
+			    	
+			    	int start=0;
+			    	if(this.hasRowNames.equals("true")) {
+			    		start=1;
+			    		n--;
+			    	}
+			    	double[] col = new double[n];
+			    	for(int i = start; i<rowsize; i++) {
+			    		if(i != indextarget) {
+			    			col[j] = (double)line.getDouble(i);
+			    			j++;
+			    		}
+			    	}
+
+			    	LabeledPoint labelpt = new LabeledPoint(finalLabel, Vectors.dense(col));
 			    	return labelpt;
 			    });
 		return labeldata;
