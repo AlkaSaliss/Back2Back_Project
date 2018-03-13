@@ -38,8 +38,17 @@ public class main {
 		rf.setParameters(3, categoricalFeaturesInfo, 5, "auto", "gini", 1, 2, 123);
 		System.out.println("Resultats loop Spark RF : \n"+rf.aggregateEval(5, 0.7));
 		
+		System.out.println("---- REGRESSION ---- \n");
 		
-
+		Data d1 = new Data("data/testreg.csv", "y", "true", "false", false);
+		JavaRDD<LabeledPoint> dataSpark = d1.readSpark();
+		System.out.println(dataSpark.take(1));
+		
+		Map<Integer, Integer> categoricalFeaturesInfo1 = new HashMap<Integer, Integer>();
+		SparkDecisionTree tree1 = new SparkDecisionTree(d1, 0.7);
+		tree1.setParameters(0, categoricalFeaturesInfo1, "variance", 1, 2);
+		System.out.println("Resultats loop Spark DT  regression: \n"+tree1.aggregateEval(5, 0.7));
+		
 	}
 
 }

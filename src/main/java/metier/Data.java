@@ -28,18 +28,18 @@ public class Data implements Serializable {
 	String hasRowNames="false";
 	String sep = ","; //R
 	String dec = "."; //R
-	Boolean classif = true;
+	boolean classif;
 	ArrayList<String> catFeaturesNames;
 //	String catTarget = "false"; //weka
 	String toNominal = "false"; //
 //	private Map<Integer, Integer> categoricalFeaturesInfo;
 	
-	public Data(String path, String targetname, String header, String hasRowNames, Boolean RegorNot) {
+	public Data(String path, String targetname, String header, String hasRowNames, boolean ClassifOrNot) {
 		this.path = path;
 		this.targetname = targetname;
 		this.header = header;
 		this.hasRowNames = hasRowNames;
-		this.classif = RegorNot;
+		this.classif = ClassifOrNot;
 	}
 	
 	/**
@@ -106,12 +106,13 @@ public class Data implements Serializable {
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
 			    	int rowsize =  line.length();
-			    	String target = line.getAs(this.targetname);
+			    	//String target = line.getAs(this.targetname);
 			    	int indextarget = line.fieldIndex(this.targetname);
 			    	
 			    	Double finalLabel;
 			    	
 			    	if(this.classif) {
+			    		String target = line.getAs(this.targetname);
 			    		Double Catlabel;
 				    	if(catmap.containsKey(target)) {
 				    		Catlabel = catmap.get(target);
