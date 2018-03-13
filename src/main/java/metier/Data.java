@@ -2,30 +2,26 @@ package metier;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
-
 import java.io.File;
-import java.io.IOException;
-
 import javax.script.ScriptException;
-
 import org.renjin.script.RenjinScriptEngine;
-
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NumericToNominal;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class Data  implements Serializable {
+public class Data implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String path;
 	String header="true"; //true or false;
 	String targetName;
@@ -35,10 +31,10 @@ public class Data  implements Serializable {
 	boolean classif=true;
 	ArrayList<String> catFeaturesNames = new ArrayList<String>();
 	
-	//String catTarget = "false"; //weka
-	//String toNominal = "true"; //weka
+	
 	
 	public Data(String path, String header, String targetName, String hasRowNames, String sep, String dec, boolean classif, ArrayList<String> catFeaturesNames) {
+
 		this.path = path;
 		this.targetName = targetName;
 		this.header = header;
@@ -49,26 +45,21 @@ public class Data  implements Serializable {
 		this.catFeaturesNames = catFeaturesNames;
 		
 	}
+	public Data() {}
 	
-
-	public Data() {
-	
-	}
 	
 	/**
      * Function that read a csv file and return a JavaRDD LabeledPoint (first column being the target variable)
      * 
      */
 
-	public JavaRDD<LabeledPoint> readSpark(JavaSparkContext sc){
-		SQLContext sqlcontext = new SQLContext(sc);
-		
+	public JavaRDD<LabeledPoint> readSpark_old(){
+		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
 		JavaRDD<Row> test = sqlcontext.read()
 				.format("com.databricks.spark.csv")
 				.option("inferSchema", "true")
 				.option("header", this.header)
 				.load(this.path).javaRDD();
-
 		Map<String, Double> catmap = new HashMap<>();
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
@@ -104,6 +95,60 @@ public class Data  implements Serializable {
 			    	}
 
 			    	LabeledPoint labelpt = new LabeledPoint(Catlabel, Vectors.dense(col));
+			    	return labelpt;
+			    });
+		return labeldata;
+	}
+	
+	public JavaRDD<LabeledPoint> readSpark(){
+		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
+		JavaRDD<Row> test = sqlcontext.read()
+				.format("com.databricks.spark.csv")
+				.option("inferSchema", "true")
+				.option("header", this.header)
+				.load(this.path).javaRDD();
+
+		Map<String, Double> catmap = new HashMap<>();
+		JavaRDD<LabeledPoint> labeldata = test
+			    .map((Row line) -> {
+			    	int rowsize =  line.length();
+			    	String target = line.getAs(this.targetName);
+			    	int indextarget = line.fieldIndex(this.targetName);
+			    	Double finalLabel;
+			    	if(this.classif) {
+			    		Double Catlabel;
+				    	if(catmap.containsKey(target)) {
+				    		Catlabel = catmap.get(target);
+				    	}
+				    	else {
+				    		catmap.put(target, (double)catmap.size());
+				    		Catlabel = catmap.get(target);
+				    	}
+				    	finalLabel = Catlabel;
+			    	}
+			    	else {
+			    		finalLabel = line.getDouble(indextarget);
+			    	}
+			    	
+			    	
+			    	int n = rowsize-1;
+			    	
+			    	int j = 0;
+			    	
+			    	int start=0;
+			    	if(this.hasRowNames.equals("true")) {
+			    		start=1;
+			    		n--;
+			    	}
+			    	double[] col = new double[n];
+			    	for(int i = start; i<rowsize; i++) {
+			    		if(i != indextarget) {
+			    			col[j] = (double)line.getDouble(i);
+			    			j++;
+			    		}
+			    	}
+
+			    	LabeledPoint labelpt = new LabeledPoint(finalLabel, Vectors.dense(col));
 			    	return labelpt;
 			    });
 		return labeldata;

@@ -3,7 +3,7 @@ package metier;
 public interface Model {
 
 	public abstract void setCompleteData(Data d) throws Exception;
-	public abstract void split(Double propTrain) throws Exception;
+	public abstract void split(double propTrain) throws Exception;
 	public abstract void fit() throws Exception;
 	public abstract double eval() throws Exception;
 	
@@ -13,7 +13,9 @@ public interface Model {
 			this.split(propTrain);
 			this.fit();
 			sum_eval += this.eval();
-		}
+		} 	
 		return sum_eval/iterations;
 	}
+	
 }
+

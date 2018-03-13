@@ -34,7 +34,7 @@ public abstract class WekaModel implements Model {
 	 * Method that split the complet dataset into train and test, given the train set proportion (between 0 and 1)
 	 * */
 	@Override
-	public void split(Double propTrain) {
+	public void split(double propTrain) {
 		this.completeDataSet.randomize(new java.util.Random(0));
 		
 		int trainSize = (int) Math.round(this.completeDataSet.numInstances() * propTrain);

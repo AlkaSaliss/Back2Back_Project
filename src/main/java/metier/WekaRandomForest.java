@@ -58,7 +58,6 @@ public class WekaRandomForest extends WekaModel {
 			}
 		
 	}
-	
-	
+
 
 }

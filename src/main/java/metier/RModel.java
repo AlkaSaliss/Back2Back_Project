@@ -26,9 +26,9 @@ public abstract class RModel implements Model {
 	
 
 	//@Override
-	public void split(Double propTrain) throws Exception {
+	public void split(double propTrain) throws Exception {
 		//engine.eval("set.seed(123)");
-		this.engine.eval("trainIndex <- sample(1:nrow(data), size=round(nrow(data)*"+propTrain.toString()+"), replace=F)");
+		this.engine.eval("trainIndex <- sample(1:nrow(data), size=round(nrow(data)*"+propTrain+"), replace=F)");
 		this.engine.eval("train <- data[trainIndex, ]");
 		this.engine.eval("test <- data[-trainIndex, ]");
 	}

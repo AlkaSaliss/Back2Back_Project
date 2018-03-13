@@ -41,17 +41,7 @@ public class RSVM extends RModel {
 		
 	}
 
-	@Override
-	 public double runLoop(int iterations, double propTrain) throws Exception {
-	 		double sum_eval = 0;
-	 		for(int i=0; i<iterations; i++) {
-	 			this.split(propTrain);
-	 			this.fit();
-	 			sum_eval += this.eval();
-	 			
-	 		}
-	 		return sum_eval/(iterations);
-	 	}
+	
 	
 	enum kernel {
 		radial, polynomial, linear ,sigmoid
