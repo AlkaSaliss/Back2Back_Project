@@ -4,17 +4,17 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.PairFunction;
-import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.mllib.tree.DecisionTree;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
 
 import scala.Tuple2;
 
-public class SparkDecisionTree extends SparkModel  implements Serializable{
-	private Integer numClasses;
+public class SparkDecisionTree extends SparkModel implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer numClasses; // Needed for spark classif (0 for regression ?)
 	private Map<Integer, Integer> categoricalFeaturesInfo;
 	private String impurity = "gini";
 	private Integer maxDepth = 5;
@@ -22,15 +22,13 @@ public class SparkDecisionTree extends SparkModel  implements Serializable{
 	//private static JavaSparkContext sc;
 	private DecisionTreeModel model;
 	
-	public SparkDecisionTree(JavaSparkContext sc, Data d, double propTrain) {
-		this.sc = sc;
+	public SparkDecisionTree(Data d, double propTrain) {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
 	}
 	
 	public void setParameters(Integer numClasses, Map<Integer, Integer> categoricalFeaturesInfo, String impurity,
 			Integer maxDepth, Integer maxBins) {
-		this.sc = sc;
 		this.numClasses = numClasses;
 		this.categoricalFeaturesInfo = categoricalFeaturesInfo;
 		this.impurity = impurity;
