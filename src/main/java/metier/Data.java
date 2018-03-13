@@ -118,7 +118,9 @@ public class Data  implements Serializable {
 			    	int rowsize =  line.length();
 			    	String target = line.getAs(this.targetname);
 			    	int indextarget = line.fieldIndex(this.targetname);
+			    	
 			    	Double finalLabel;
+			    	
 			    	if(this.classif) {
 			    		Double Catlabel;
 				    	if(catmap.containsKey(target)) {
