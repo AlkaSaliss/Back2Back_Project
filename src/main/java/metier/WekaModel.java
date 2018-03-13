@@ -2,53 +2,37 @@ package metier;
 
 import weka.core.Instances;
 
-public class WekaModel extends Model {
+public abstract class WekaModel implements Model {
 
-	private String datapath; //file containing data
-	private Instances completeDataSet, train, test;
-	
+	/*
+	 * Attributes containning the initial dataset, the train and test sets if splitting is performed 
+	 * */
+	private Instances completeDataSet;
+	private Instances train;
+	private Instances test;
+	private boolean classif; //to speify weither classification or regression
+
+
+
 	public WekaModel() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
-	public String getDatapath() {
-		return datapath;
-	}
+	
 
-	public void setDatapath(String datapath) {
-		this.datapath = datapath;
-	}
-
-	public Instances getCompleteDataSet() {
-		return completeDataSet;
-	}
-
-	public void setCompleteDataSet(Instances completeDataSet) {
-		this.completeDataSet = completeDataSet;
-	}
-
-	public Instances getTrain() {
-		return train;
-	}
-
-	public void setTrain(Instances train) {
-		this.train = train;
-	}
-
-	public Instances getTest() {
-		return test;
-	}
-
-	public void setTest(Instances test) {
-		this.test = test;
-	}
-
+	/*
+	 * Method that takes Data object and set it as a weka instance object in completeDataSet attribute
+	 * */
 	@Override
 	public void setCompleteData(Data d) throws Exception {
 			this.completeDataSet = d.readWeka();
+			this.classif=d.isClassif();
 
 	}
 
+	/*
+	 * Method that split the complet dataset into train and test, given the train set proportion (between 0 and 1)
+	 * */
 	@Override
 	public void split(Double propTrain) {
 		this.completeDataSet.randomize(new java.util.Random(0));
@@ -60,16 +44,66 @@ public class WekaModel extends Model {
 
 	}
 
-	@Override
-	public void fit() throws Exception {
-		// TODO Auto-generated method stub
 
+
+	public Instances getCompleteDataSet() {
+		return completeDataSet;
 	}
 
-	@Override
-	public double eval() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+
+
+	public void setCompleteDataSet(Instances completeDataSet) {
+		this.completeDataSet = completeDataSet;
 	}
+
+
+
+	public Instances getTrain() {
+		return train;
+	}
+
+
+
+	public void setTrain(Instances train) {
+		this.train = train;
+	}
+
+
+
+	public Instances getTest() {
+		return test;
+	}
+
+
+
+	public void setTest(Instances test) {
+		this.test = test;
+	}
+
+	
+	public boolean isClassif() {
+		return classif;
+	}
+
+
+
+	public void setClassif(boolean classif) {
+		this.classif = classif;
+	}
+	
+//	@Override
+//	public void fit() throws Exception {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public double eval() throws Exception {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+
+
+	
 
 }

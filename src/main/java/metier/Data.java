@@ -1,5 +1,6 @@
 package metier;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,22 +28,31 @@ import weka.filters.unsupervised.attribute.Remove;
 public class Data  implements Serializable {
 	String path;
 	String header="true"; //true or false;
-	String targetname;
+	String targetName;
 	String hasRowNames="false";
 	String sep = ","; //R
 	String dec = "."; //R
+	boolean classif=true;
+	ArrayList<String> catFeaturesNames = new ArrayList<String>();
 	
-	String catTarget = "false"; //weka
-	String toNominal = "true"; //weka
+	//String catTarget = "false"; //weka
+	//String toNominal = "true"; //weka
 	
-	public Data(String path, String targetname, String header) {
+	public Data(String path, String header, String targetName, String hasRowNames, String sep, String dec, boolean classif, ArrayList<String> catFeaturesNames) {
 		this.path = path;
-		this.targetname = targetname;
+		this.targetName = targetName;
 		this.header = header;
+		this.hasRowNames = hasRowNames;
+		this.sep = sep;
+		this.dec = dec;
+		this.classif = classif;
+		this.catFeaturesNames = catFeaturesNames;
+		
 	}
 	
 
 	public Data() {
+	
 	}
 	
 	/**
@@ -59,15 +69,14 @@ public class Data  implements Serializable {
 				.option("header", this.header)
 				.load(this.path).javaRDD();
 
-		
+		Map<String, Double> catmap = new HashMap<>();
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
 			    	int rowsize =  line.length();
-			    	String target = line.getAs(this.targetname);
-			    	int indextarget = line.fieldIndex(this.targetname);
+			    	String target = line.getAs(this.targetName);
+			    	int indextarget = line.fieldIndex(this.targetName);
 			    	
 			    	Double Catlabel;
-			    	Map<String, Double> catmap = new HashMap<>();
 			    	if(catmap.containsKey(target)) {
 			    		Catlabel = catmap.get(target);
 			    	}
@@ -76,17 +85,18 @@ public class Data  implements Serializable {
 			    		Catlabel = catmap.get(target);
 			    	}
 			    	
-			     
-			    	double[] col = new double[rowsize-1];
+			    	
+			    	int n = rowsize-1;
+			    	
 			    	int j = 0;
 			    	
+			    	int start=0;
 			    	if(this.hasRowNames.equals("true")) {
-			    		int i=1;
+			    		start=1;
+			    		n--;
 			    	}
-			    	else {
-			    		int i = 0;
-			    	}
-			    	for(int i=1; i<rowsize; i++) {
+			    	double[] col = new double[n];
+			    	for(int i = start; i<rowsize; i++) {
 			    		if(i != indextarget) {
 			    			col[j] = (double)line.getDouble(i);
 			    			j++;
@@ -102,15 +112,56 @@ public class Data  implements Serializable {
 	
 	public void readR(RenjinScriptEngine engine) throws ScriptException {
 		
+		/*
+		 * if the input file has rownames,(we suppose it is yhe 1st column),
+		 * then we pass 1 as row.names param in r read.csv function
+		 * else : we pas NULL */
 		String rownames = this.hasRowNames.equalsIgnoreCase("true") ? "1" : "NULL";
 		
+		/*
+		 * Reading the data with r*/
 		engine.eval("data <- read.csv(\""+this.path+"\", header="+this.header.toUpperCase() +", sep=" + this.sep + ", row.names="+rownames+")");
-		engine.eval("targetName <- \"" + this.targetname + "\"");
-		if (this.toNominal.toLowerCase() == "true") {
+		/*
+		 * Storing the target variable in r
+		 * */
+		engine.eval("targetName <- \"" + this.targetName + "\"");
+		
+		/*
+		 * if we are doing classification, we convert (coerce) the target variable to a factor one
+		 * */
+		if (this.classif) {
 			engine.eval("data[, targetName] <- as.factor(data[, targetName])");
 		}
 		
+		/*
+		 * Creating the formula needed for most r models
+		 * */
 		engine.eval("formula <- as.formula(paste(targetName, \"~ .\"))");
+		
+		/*
+		 * Convert/coerce all categorical variables as factors in R
+		 * */
+		
+		if (this.catFeaturesNames.size()>0){
+			/*
+			 * Add quotes for each categorical variable name in the catFeaturesNames
+			 * */
+			ArrayList<String> tmp = new ArrayList<String>();
+			for (String s:this.catFeaturesNames) {
+				tmp.add("\""  + s+ "\"");
+			}
+			String factors = String.join(",", tmp);
+			
+			/*
+			 * Converting list of categorical features as R vector
+			 * */
+			factors = "c(" + factors + ")";
+			engine.eval("cat_vars <- " + factors);
+			engine.eval("for (v in cat_vars) {data[, v] = as.factor(data[, v])}");
+		}
+		
+
+		
 	}
 	
 	public Instances readWeka() throws Exception {
@@ -122,10 +173,15 @@ public class Data  implements Serializable {
 		
 		
 		/*
-		 * Retrieve the target column index and set this column as model dependant variable*/
-		int targetIndex = data.attribute(this.targetname).index(); // target variable index
+		 * Retrieve the target column index and set this column as the model dependant variable
+		 * */
+		int targetIndex = data.attribute(this.targetName).index(); // target variable index
 		data.setClassIndex(targetIndex);
 		
+		/*
+		 * If dataset has rownames column (we assume it is the 1st column)
+		 * we remove it
+		 * */
 		if (this.hasRowNames.equalsIgnoreCase("true")) {
 		
 			String[] options = new String[2];
@@ -141,9 +197,9 @@ public class Data  implements Serializable {
 		
 		
 		/*
-		 * Convert numeric target variable to categories
+		 * Convert target variable to weka nominal one if we are performing classification
 		 * */
-		if (this.toNominal.equalsIgnoreCase("true")) {
+		if (this.classif) {
 		
 			NumericToNominal convert= new NumericToNominal();
 	        String[] options= new String[2];
@@ -157,74 +213,112 @@ public class Data  implements Serializable {
 	   
 		}
 		
+		/*
+		 * Convert/coerce categorical variables to weka Nominal if necessary
+		 * */
+		if (this.catFeaturesNames.size()>0){
+			
+			for (String s:this.catFeaturesNames) {
+				
+				int var_index = data.attribute(s).index(); // retrieve the categorical variable index
+			
+				NumericToNominal convert= new NumericToNominal();
+		        String[] options= new String[2];
+		        options[0]="-R";
+		        options[1]= String.valueOf(var_index+1) ;
+		        convert.setOptions(options);
+		        convert.setInputFormat(data);
+		        data = Filter.useFilter(data, convert);
+			
+			}
+		}
+		
 		return data;
 		
 	}
-	
 
+/*
+ * Getters and setters
+ * */
 	public String getPath() {
 		return path;
 	}
+
 
 	public void setPath(String path) {
 		this.path = path;
 	}
 
+
 	public String getHeader() {
 		return header;
 	}
+
 
 	public void setHeader(String header) {
 		this.header = header;
 	}
 
-	public String getTargetname() {
-		return targetname;
+
+	public String getTargetName() {
+		return targetName;
 	}
 
-	public void setTargetname(String targetname) {
-		this.targetname = targetname;
+
+	public void setTargetName(String targetName) {
+		this.targetName = targetName;
 	}
+
 
 	public String getHasRowNames() {
 		return hasRowNames;
 	}
 
+
 	public void setHasRowNames(String hasRowNames) {
 		this.hasRowNames = hasRowNames;
 	}
+
 
 	public String getSep() {
 		return sep;
 	}
 
+
 	public void setSep(String sep) {
 		this.sep = sep;
 	}
+
 
 	public String getDec() {
 		return dec;
 	}
 
+
 	public void setDec(String dec) {
 		this.dec = dec;
 	}
 
-	public String getCatTarget() {
-		return catTarget;
+
+	public boolean isClassif() {
+		return classif;
 	}
 
-	public void setCatTarget(String catTarget) {
-		this.catTarget = catTarget;
+
+	public void setClassif(boolean classif) {
+		this.classif = classif;
 	}
 
-	public String getToNominal() {
-		return toNominal;
+
+	public ArrayList<String> getCatFeaturesNames() {
+		return catFeaturesNames;
 	}
 
-	public void setToNominal(String toNominal) {
-		this.toNominal = toNominal;
+
+	public void setCatFeaturesNames(ArrayList<String> catFeaturesNames) {
+		this.catFeaturesNames = catFeaturesNames;
 	}
+
 	
 	
 }

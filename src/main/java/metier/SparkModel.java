@@ -16,10 +16,34 @@ public abstract class SparkModel extends Model{
 	}
 	
 	@Override
-	public void split(Double propTrain) {
+	public void split(double propTrain) {
 		JavaRDD<LabeledPoint>[] splits = this.completeDataSet.randomSplit(new double[]{propTrain, 1-propTrain});
 		this.train = splits[0];
 		this.test = splits[1];
+	}
+
+	public JavaRDD<LabeledPoint> getCompleteDataSet() {
+		return completeDataSet;
+	}
+
+	public void setCompleteDataSet(JavaRDD<LabeledPoint> completeDataSet) {
+		this.completeDataSet = completeDataSet;
+	}
+
+	public JavaRDD<LabeledPoint> getTrain() {
+		return train;
+	}
+
+	public void setTrain(JavaRDD<LabeledPoint> train) {
+		this.train = train;
+	}
+
+	public JavaRDD<LabeledPoint> getTest() {
+		return test;
+	}
+
+	public void setTest(JavaRDD<LabeledPoint> test) {
+		this.test = test;
 	}
 
 	
