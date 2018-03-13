@@ -29,7 +29,7 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 	//private static JavaSparkContext sc;
 	private DecisionTreeModel model;
 	
-	public SparkDecisionTree(Data d, double propTrain) {
+	public SparkDecisionTree(Data d, double propTrain) throws Exception {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
 	}
@@ -87,5 +87,6 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 		}
 		
 	}
+
 
 }

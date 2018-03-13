@@ -9,14 +9,14 @@ public abstract class SparkModel implements Model{
 	JavaRDD<LabeledPoint> test;
 	Boolean classif;
 	
-	@Override
+	//@Override
 	public void setCompleteData(Data d) {
 		this.completeDataSet = d.readSpark();
 		this.classif = d.classif;
 	}
 	
 	@Override
-	public void split(double propTrain) {
+	public void split(double propTrain) throws Exception{
 		JavaRDD<LabeledPoint>[] splits = this.completeDataSet.randomSplit(new double[]{propTrain, 1-propTrain});
 		this.train = splits[0];
 		this.test = splits[1];

@@ -26,7 +26,7 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	private Integer seed = 12345;
 	private RandomForestModel model;
 	
-	public SparkRandomForest(Data d, double propTrain) {
+	public SparkRandomForest(Data d, double propTrain) throws Exception {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
 		
@@ -59,6 +59,8 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 		Double testErr = predictionAndLabel.filter(pl -> !pl._1().equals(pl._2())).count() / (double) this.test.count();
 		return 1-testErr;
 	}
+
+
 
 //	@Override
 //	public double aggregateEval(int iterations, double propTrain) {

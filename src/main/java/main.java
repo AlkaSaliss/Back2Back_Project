@@ -16,7 +16,18 @@ import org.apache.log4j.Level;
 
 
 public class main {
-
+/*
+<<<<<<< HEAD
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		SparkSession session = SparkSession.getInstance();
+//		JavaSparkContext sc = session.getSc();
+//		
+//		Data d = new Data("data/iris.csv", "Species", "true");
+//		JavaRDD<LabeledPoint> dataSpark = d.readSpark(sc);
+//		System.out.println(dataSpark.take(1));
+//	}
+=======
 	public static void main(String[] args) {
 		Logger.getLogger("org").setLevel(Level.OFF);
 		Logger.getLogger("akka").setLevel(Level.OFF);
@@ -50,5 +61,6 @@ public class main {
 		System.out.println("Resultats loop Spark DT  regression: \n"+tree1.aggregateEval(5, 0.7));
 		
 	}
-
+>>>>>>> branch 'master' of https://github.com/AlkaSaliss/Back2Back_Project.git
+*/
 }

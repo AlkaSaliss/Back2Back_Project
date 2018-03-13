@@ -46,6 +46,18 @@
 			<artifactId>weka-stable</artifactId>
 			<version>3.8.0</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.renjin.cran</groupId>
+		    <artifactId>randomForest</artifactId>
+		    <version>4.6-12-b67</version>
+  		</dependency>
+  		
+  		<dependency>
+		    <groupId>org.renjin.cran</groupId>
+		    <artifactId>e1071</artifactId>
+		    <version>1.6-8-b31</version>
+  		</dependency>
 
 	</dependencies>
 

@@ -1,9 +1,9 @@
 package fr.ensai.renjin_ml;
 
 
-import java.io.BufferedReader;
+//import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+//import java.io.FileReader;
 import java.util.Random;
 
 import weka.core.Instances;
@@ -20,7 +20,7 @@ import weka.filters.unsupervised.attribute.Remove;
 
 
 
-public class WekaDecisionTree {
+public class WekaDecisionTreeBis {
 
 	
 	private String datapath; //file containing data
@@ -30,7 +30,7 @@ public class WekaDecisionTree {
 	
 	
 	
-	public WekaDecisionTree(String path, boolean hasRowName, boolean toNumeric) throws Exception {
+	public WekaDecisionTreeBis(String path, boolean hasRowName, boolean toNumeric) throws Exception {
 		this.datapath = path;
 		
 		//BufferedReader reader = new BufferedReader(new FileReader(path));
