@@ -1,4 +1,4 @@
-package fr.ensai.sparkml;
+package metier;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 
@@ -29,12 +29,54 @@ import org.apache.spark.api.java.JavaSparkContext;
 //}
 
 
+public class SparkSession{
+
+	  //Le singleton
+
+	  private static SparkSession sess = new SparkSession();
+
+	  //Variable d'instance
+
+	  private JavaSparkContext sc;
+
+	   
+
+	  //Constructeur privé
+
+	  private SparkSession(){
+		SparkConf sconf = new SparkConf().setAppName("conf").setMaster("local");
+	    	sc = new JavaSparkContext(sconf);
+	  }
+
+	   
+
+	  //Méthode d'accès au singleton
+
+	  public static SparkSession getInstance(){
+
+	    if(sess == null){
+		sess = new SparkSession();
+		}      
+	    return sess;
+	  }
+
+	   
+
+	  //Accesseur 
+
+	  public JavaSparkContext getContext(){
+
+	    return this.sc;
+
+	  }
+
+	}
+/*
 public class SparkSession
 {       
 	
 	private JavaSparkContext sc;
 	
-    /** Constructeur privé */  
     private SparkSession(String name)
     {
     	SparkConf sparkConf = new SparkConf().setAppName(name).setMaster("local");
@@ -47,16 +89,13 @@ public class SparkSession
 	}
 
 	
-    /** Holder */
     private static class SingletonHolder
     {       
-        /** Instance unique non préinitialisée */
         private final static SparkSession instance = new SparkSession("SparkSession");
     }
  
-    /** Point d'accès pour l'instance unique du singleton */
     public static SparkSession getInstance()
     {
         return SingletonHolder.instance;
     }
-}
+} */

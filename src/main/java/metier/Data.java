@@ -2,44 +2,37 @@ package metier;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
-
 import java.io.File;
-import java.io.IOException;
-
 import javax.script.ScriptException;
-
 import org.renjin.script.RenjinScriptEngine;
-
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NumericToNominal;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class Data  implements Serializable {
+public class Data implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String path;
 	String header="true"; //true or false;
 	String targetname;
 	String hasRowNames="false";
 	String sep = ","; //R
 	String dec = "."; //R
-	
-	String catTarget = "false"; //weka
-	String toNominal = "false"; //
-	
 	Boolean classif = true;
-	
 	ArrayList<String> catFeaturesNames;
-	private Map<Integer, Integer> categoricalFeaturesInfo;
+//	String catTarget = "false"; //weka
+	String toNominal = "false"; //
+//	private Map<Integer, Integer> categoricalFeaturesInfo;
 	
 	public Data(String path, String targetname, String header, String hasRowNames, Boolean RegorNot) {
 		this.path = path;
@@ -54,15 +47,13 @@ public class Data  implements Serializable {
      * 
      */
 
-	public JavaRDD<LabeledPoint> readSpark_old(JavaSparkContext sc){
-		SQLContext sqlcontext = new SQLContext(sc);
-		
+	public JavaRDD<LabeledPoint> readSpark_old(){
+		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
 		JavaRDD<Row> test = sqlcontext.read()
 				.format("com.databricks.spark.csv")
 				.option("inferSchema", "true")
 				.option("header", this.header)
 				.load(this.path).javaRDD();
-
 		Map<String, Double> catmap = new HashMap<>();
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
@@ -103,9 +94,8 @@ public class Data  implements Serializable {
 		return labeldata;
 	}
 	
-	public JavaRDD<LabeledPoint> readSpark(JavaSparkContext sc){
-		SQLContext sqlcontext = new SQLContext(sc);
-		
+	public JavaRDD<LabeledPoint> readSpark(){
+		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
 		JavaRDD<Row> test = sqlcontext.read()
 				.format("com.databricks.spark.csv")
 				.option("inferSchema", "true")

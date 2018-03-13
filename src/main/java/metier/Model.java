@@ -1,6 +1,6 @@
 package metier;
 
-public  interface Model {
+public interface Model {
 	public abstract void setCompleteData(Data d);
 	public abstract void split(double propTrain);
 	public abstract void fit();

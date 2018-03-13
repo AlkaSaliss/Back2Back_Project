@@ -3,18 +3,19 @@ package metier;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.tree.RandomForest;
 import org.apache.spark.mllib.tree.model.RandomForestModel;
-
 import metier.Data;
 import metier.SparkModel;
 import scala.Tuple2;
 
 public class SparkRandomForest  extends SparkModel  implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer numClasses = 2;
 	private Map<Integer, Integer> categoricalFeaturesInfo = new HashMap<Integer, Integer>();
 	private Integer numTrees = 3; // Use more in practice.
@@ -25,8 +26,7 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	private Integer seed = 12345;
 	private RandomForestModel model;
 	
-	public SparkRandomForest(JavaSparkContext sc, Data d, double propTrain) {
-		this.sc = sc;
+	public SparkRandomForest(Data d, double propTrain) {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
 		
@@ -35,7 +35,6 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	public void setParameters(Integer numClasses, Map<Integer, Integer> categoricalFeaturesInfo, Integer numTree, String featureSubsetStrategy, 
 			String impurity,
 			Integer maxDepth, Integer maxBins, Integer seed) {
-		this.sc = sc;
 		this.numClasses = numClasses;
 		this.categoricalFeaturesInfo = categoricalFeaturesInfo;
 		this.numTrees = numTree; // Use more in practice.
