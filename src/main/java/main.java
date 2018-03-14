@@ -23,7 +23,16 @@ import org.apache.log4j.Level;
 
 public class main {
 
-
+	public static void launchComparison(Data d, DecisionTree dt, double propTrain, int nbIter) throws Exception {
+		SparkDecisionTree sdt = new SparkDecisionTree(d, dt, propTrain);
+		WekaDecisionTree wdt = new WekaDecisionTree(d, dt, propTrain);
+		RDecisionTree rdt = new RDecisionTree(d, dt, propTrain);
+		
+		System.out.println(sdt.aggregateEval(nbIter, propTrain));
+		System.out.println(wdt.aggregateEval(nbIter, propTrain));
+		System.out.println(rdt.aggregateEval(nbIter, propTrain));
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Logger.getLogger("org").setLevel(Level.OFF);
 		Logger.getLogger("akka").setLevel(Level.OFF);
@@ -75,13 +84,16 @@ public class main {
 //		System.out.println("*************************************************************");
 		/* --- Data init --- */
 
-		String path = "data/iris.csv";
+		String path = "data/testreg2.csv";
 		String header = "true";
-		String targetName = "Species";
-		String hasRowNames = "true";
+		String targetName = "y";
+		String hasRowNames = "false";
 		String sep = ",";
 		String dec = ".";
-		Boolean classif = true;
+		boolean classif = false;
+		ArrayList<String> catNames = new ArrayList<String>();
+		catNames.add("cat");
+		catNames.add("cat2");
 
 		Data d =  new Data();
 		d.setPath(path);
@@ -92,13 +104,14 @@ public class main {
 		d.setDec(dec);
 		d.setClassif(classif);
 		d.setNumClasses(3);
+		d.setCatFeaturesNames(catNames);
 
 		/* --- Decision Tree init --- */
 
 		int maxDepth = 10;
 		int minSplit = 15;
 		double cp = 0.1;
-		Boolean gini = true;
+		boolean gini = false;
 		int minPerLeaf = 10;
 		int maxBins = 50;
 
@@ -112,19 +125,11 @@ public class main {
 
 		/* --- propTrain --- */
 		double propTrain = 0.8;
+		int nbIter = 100;
 
 		/* --- Models init --- */
 
-		SparkDecisionTree sdt = new SparkDecisionTree(d, dt, propTrain);
-		WekaDecisionTree wdt = new WekaDecisionTree(d, dt, propTrain);
-		RDecisionTree rdt = new RDecisionTree(d, dt, propTrain);
-
-		sdt.fit();
-		System.out.println(sdt.eval());
-		wdt.fit();
-		System.out.println(wdt.eval());
-		rdt.fit();
-		System.out.println(rdt.eval());				
+		launchComparison(d, dt, propTrain, nbIter);
 	}
 
 }

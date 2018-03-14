@@ -23,7 +23,7 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	private String impurity = "gini";
 	private RandomForestModel model;
 	private metier.RandomForest rf;
-	private Boolean classif;
+	private boolean classif;
 	private int numClasses;
 	
 	public SparkRandomForest(Data d, metier.RandomForest rf, double propTrain) throws Exception {
