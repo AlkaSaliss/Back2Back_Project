@@ -10,6 +10,7 @@ import metier.SparkRandomForest;
 import metier.SparkSession;
 import metier.Data;
 import metier.DecisionTree;
+import metier.RandomForest;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.regression.LabeledPoint;
@@ -35,9 +36,28 @@ public class main {
 		dt.setGini(true);
 		dt.setMaxBins(2);
 		dt.setMaxDepth(1);
+		
 		SparkDecisionTree sdt = new SparkDecisionTree(d, dt, 0.7);
 		System.out.println("Resultats loop Spark DT : \n"+sdt.aggregateEval(5, 0.7));
 		System.out.println("*************************************************************");
+		
+		
+		RandomForest rf = new RandomForest();
+		rf.setGini(true);
+		rf.setNtrees(5);
+		rf.setFeatureSubsetStrategy("auto");
+		rf.setMaxDepth(1);
+		rf.setMaxBins(2);
+		rf.setSeed(1234);
+		
+		SparkRandomForest srf = new SparkRandomForest(d, rf, 0.7);
+		System.out.println("Resultats loop Spark DT : \n"+srf.aggregateEval(5, 0.7));
+		System.out.println("*************************************************************");
+		
+//		ArrayList<String> catnames = new ArrayList<String>();
+//		catnames.add("cat");
+//		catnames.add("cat2");
+//		Data d1 = new Data("data/testreg2.csv", "true", "y", "false", ",", ".",false, catnames);
 		
 //		SparkRandomForest rf = new SparkRandomForest(d, 0.7);
 //		rf.setParameters(3, categoricalFeaturesInfo, 5, "auto", "gini", 1, 2, 123);

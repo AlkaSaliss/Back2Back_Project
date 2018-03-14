@@ -25,6 +25,8 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 	private DecisionTreeModel model;
 	private metier.DecisionTree dt;
 	
+	
+	
 	public SparkDecisionTree(Data d, metier.DecisionTree dt, double propTrain) throws Exception {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
