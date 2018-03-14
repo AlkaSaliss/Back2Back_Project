@@ -4,8 +4,15 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.mllib.tree.DecisionTree;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
+import org.apache.spark.rdd.RDD;
+import org.apache.spark.mllib.tree.configuration.Algo;
+import org.apache.spark.mllib.tree.configuration.Strategy;
+import org.apache.spark.mllib.tree.impurity.Entropy;
+import org.apache.spark.mllib.tree.impurity.Gini;
+import org.apache.spark.mllib.tree.impurity.Impurity;
 
 import scala.Tuple2;
 
@@ -14,37 +21,34 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer numClasses; // Needed for spark classif (0 for regression ?)
-	private Map<Integer, Integer> categoricalFeaturesInfo;
 	private String impurity = "gini";
-	private Integer maxDepth = 5;
-	private Integer maxBins;
-	//private static JavaSparkContext sc;
 	private DecisionTreeModel model;
+	private metier.DecisionTree dt;
 	
-	public SparkDecisionTree(Data d, double propTrain) throws Exception {
+	
+	
+	public SparkDecisionTree(Data d, metier.DecisionTree dt, double propTrain) throws Exception {
 		this.setCompleteData(d);
 		this.split(propTrain); //split initial 
-	}
-	
-	public void setParameters(Integer numClasses, Map<Integer, Integer> categoricalFeaturesInfo, String impurity,
-			Integer maxDepth, Integer maxBins) {
-		this.numClasses = numClasses;
-		this.categoricalFeaturesInfo = categoricalFeaturesInfo;
-		this.impurity = impurity;
-		this.maxDepth = maxDepth;
-		this.maxBins = maxBins;
-	}
-	
-	@Override
-	public void fit() {
-		if(this.classif) {
-			this.model = DecisionTree.trainClassifier(this.train, this.numClasses,
-					  this.categoricalFeaturesInfo, this.impurity, this.maxDepth, this.maxBins);
+		this.dt = dt;
+		if(this.dt.isGini()) {
+			this.impurity = "gini";
 		}
 		else {
-			this.model = DecisionTree.trainRegressor(this.train,
-					  this.categoricalFeaturesInfo, this.impurity, this.maxDepth, this.maxBins);
+			this.impurity = "variance";
+		}
+	}
+	
+
+
+	public void fit() {
+		if(this.classif) {
+			this.model = org.apache.spark.mllib.tree.DecisionTree.trainClassifier(this.train, this.numClasses,
+					  this.categoricalFeaturesInfo, this.impurity, this.dt.getMaxDepth(), this.dt.getMaxBins());
+		}
+		else {
+			this.model = org.apache.spark.mllib.tree.DecisionTree.trainRegressor(this.train,
+					  this.categoricalFeaturesInfo, this.impurity, this.dt.getMaxDepth(), this.dt.getMaxBins());
 		}
 	}
 

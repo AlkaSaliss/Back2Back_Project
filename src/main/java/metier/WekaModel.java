@@ -40,7 +40,7 @@ public abstract class WekaModel implements Model {
 		int trainSize = (int) Math.round(this.completeDataSet.numInstances() * propTrain);
 		int testSize = this.completeDataSet.numInstances() - trainSize;
 		this.train = new Instances(this.completeDataSet, 0, trainSize);
-		this. test = new Instances(this.completeDataSet, trainSize, testSize);
+		this.test = new Instances(this.completeDataSet, trainSize, testSize);
 
 	}
 

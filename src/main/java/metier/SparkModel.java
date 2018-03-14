@@ -1,4 +1,7 @@
 package metier;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.regression.LabeledPoint;
 
@@ -8,11 +11,15 @@ public abstract class SparkModel implements Model{
 	JavaRDD<LabeledPoint> train; 
 	JavaRDD<LabeledPoint> test;
 	Boolean classif;
+	Map<Integer, Integer> categoricalFeaturesInfo;
+	int numClasses;
 	
 	//@Override
 	public void setCompleteData(Data d) {
 		this.completeDataSet = d.readSpark();
-		this.classif = d.classif;
+		this.classif = d.isClassif();
+		this.categoricalFeaturesInfo = d.getCategoricalFeaturesInfo();
+		this.numClasses = d.getNumClasses();
 	}
 	
 	@Override

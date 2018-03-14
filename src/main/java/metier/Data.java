@@ -1,8 +1,14 @@
 package metier;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
@@ -28,8 +34,19 @@ public class Data implements Serializable {
 	String hasRowNames="false";
 	String sep = ","; //R
 	String dec = "."; //R
-	boolean classif=true;
-	ArrayList<String> catFeaturesNames = new ArrayList<String>();
+//	String catTarget = "false"; //weka
+	String toNominal = "false"; //
+	int numClasses;
+//	private Map<Integer, Integer> categoricalFeaturesInfo;
+	
+	private boolean classif=true;
+	private ArrayList<String> catFeaturesNames = new ArrayList<String>();
+
+//	private static Map<Integer, Integer> categoricalFeaturesInfo = new HashMap<Integer, Integer>(); 
+	private Map<Integer, Integer> categoricalFeaturesInfo = Collections.synchronizedMap(new HashMap<Integer, Integer>()); 
+//	ConcurrentHashMap<Integer, Integer> categoricalFeaturesInfo = new ConcurrentHashMap<>();
+	// map of the form: {(index categorical columns, number of modalities)}
+	// attribute useful only for SparkML models
 	
 	
 	
@@ -39,66 +56,25 @@ public class Data implements Serializable {
 		this.targetName = targetName;
 		this.header = header;
 		this.hasRowNames = hasRowNames;
+		this.classif = classif;
 		this.sep = sep;
 		this.dec = dec;
 		this.classif = classif;
 		this.catFeaturesNames = catFeaturesNames;
 		
 	}
-	public Data() {}
 	
+	public Data() {
+		
+	}
+
 	
 	/**
      * Function that read a csv file and return a JavaRDD LabeledPoint (first column being the target variable)
      * 
      */
 
-	public JavaRDD<LabeledPoint> readSpark_old(){
-		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
-		JavaRDD<Row> test = sqlcontext.read()
-				.format("com.databricks.spark.csv")
-				.option("inferSchema", "true")
-				.option("header", this.header)
-				.load(this.path).javaRDD();
-		Map<String, Double> catmap = new HashMap<>();
-		JavaRDD<LabeledPoint> labeldata = test
-			    .map((Row line) -> {
-			    	int rowsize =  line.length();
-			    	String target = line.getAs(this.targetName);
-			    	int indextarget = line.fieldIndex(this.targetName);
-			    	
-			    	Double Catlabel;
-			    	if(catmap.containsKey(target)) {
-			    		Catlabel = catmap.get(target);
-			    	}
-			    	else {
-			    		catmap.put(target, (double)catmap.size());
-			    		Catlabel = catmap.get(target);
-			    	}
-			    	
-			    	
-			    	int n = rowsize-1;
-			    	
-			    	int j = 0;
-			    	
-			    	int start=0;
-			    	if(this.hasRowNames.equals("true")) {
-			    		start=1;
-			    		n--;
-			    	}
-			    	double[] col = new double[n];
-			    	for(int i = start; i<rowsize; i++) {
-			    		if(i != indextarget) {
-			    			col[j] = (double)line.getDouble(i);
-			    			j++;
-			    		}
-			    	}
-
-			    	LabeledPoint labelpt = new LabeledPoint(Catlabel, Vectors.dense(col));
-			    	return labelpt;
-			    });
-		return labeldata;
-	}
+	
 	
 	public JavaRDD<LabeledPoint> readSpark(){
 		SQLContext sqlcontext = new SQLContext(SparkSession.getInstance().getContext());
@@ -109,13 +85,43 @@ public class Data implements Serializable {
 				.load(this.path).javaRDD();
 
 		Map<String, Double> catmap = new HashMap<>();
+		
+		ArrayList<Integer> catFeaturesIndex = new ArrayList<Integer>();
+		
+		Row firstRow = test.first(); //we only need the first row to get the index of each categorical columns, no need to do it for each row in the map;
+		HashMap<Integer, HashMap<String, Double>> stringToDouble = new HashMap<>(); //map of map {1 (indexcol) : {"a" (modality) :1, "b":2}}
+		
+		for(int i=0; i<this.catFeaturesNames.size(); i++) {
+			Integer catindex = firstRow.fieldIndex(this.catFeaturesNames.get(i));
+			catFeaturesIndex.add(catindex);
+			this.categoricalFeaturesInfo.put(catindex-1, 0); //initialization of the map with all index columns associate to 0 
+			stringToDouble.put(catindex, new HashMap<String, Double>());
+		}
+		
+
+		long n_row = test.count();
+		for(int l=0; l<n_row; l++) {
+			Row ligne = test.take(l+1).get(l);
+			for (Iterator<Integer> iter = catFeaturesIndex.iterator(); iter.hasNext(); ) {
+			    Integer ind = iter.next();
+			    String modality = ligne.getString(ind);
+			    if(stringToDouble.get(ind).containsKey(modality)==false) {
+			    	Integer previous = this.categoricalFeaturesInfo.get(ind-1);
+			    	this.categoricalFeaturesInfo.put(ind-1, previous+1);
+			    	stringToDouble.get(ind).put(modality, (double)stringToDouble.get(ind).size());
+			    }
+		}
+		}
+
+		
 		JavaRDD<LabeledPoint> labeldata = test
 			    .map((Row line) -> {
 			    	int rowsize =  line.length();
-			    	String target = line.getAs(this.targetName);
 			    	int indextarget = line.fieldIndex(this.targetName);
 			    	Double finalLabel;
+			    	
 			    	if(this.classif) {
+			    		String target = line.getAs(this.targetName);
 			    		Double Catlabel;
 				    	if(catmap.containsKey(target)) {
 				    		Catlabel = catmap.get(target);
@@ -130,31 +136,72 @@ public class Data implements Serializable {
 			    		finalLabel = line.getDouble(indextarget);
 			    	}
 			    	
-			    	
-			    	int n = rowsize-1;
-			    	
-			    	int j = 0;
-			    	
-			    	int start=0;
-			    	if(this.hasRowNames.equals("true")) {
-			    		start=1;
-			    		n--;
+			    	double[] global;
+			    	if(this.catFeaturesNames.isEmpty() == false) {
+			    		double[] colcat = new double[stringToDouble.size()];
+				    	int k=0;
+				    	for (Entry<Integer, HashMap<String, Double>> entry : stringToDouble.entrySet()) {
+				    	    Integer key = entry.getKey(); //key : column index
+				    	    HashMap<String, Double> value = entry.getValue(); // value : map which associate each modality to a double
+				    	    String modality = line.getString(key);
+				    	    if(value.containsKey(modality)) {
+				    	    	colcat[k] = value.get(modality);
+				    	    }
+				    	    else {
+				    	    	value.put(modality, (double)value.size());
+				    	    	int previous_number_modality = this.categoricalFeaturesInfo.get(key);
+				    	    	this.categoricalFeaturesInfo.put(key, previous_number_modality+1);
+				    	    	colcat[k] = value.get(modality);
+				    	    }
+				    	    k++;
+				    	}
+				    	
+				    	int n = (rowsize-stringToDouble.size())-1;
+				    	int j = 0;
+				    	
+				    	int start=0;
+				    	if(this.hasRowNames.equals("true")) {
+				    		start=1;
+				    		n--;
+				    	}
+				    	
+				    	double[] col = new double[n];
+				    	for(int i = start; i<n+1; i++) {
+				    		if(i != indextarget & stringToDouble.containsKey(i)==false) {
+				    			col[j] = (double)line.getDouble(i);
+				    			j++;
+				    		}
+				    	}
+				    	global = (double[])ArrayUtils.addAll(col, colcat);
 			    	}
-			    	double[] col = new double[n];
-			    	for(int i = start; i<rowsize; i++) {
-			    		if(i != indextarget) {
-			    			col[j] = (double)line.getDouble(i);
-			    			j++;
-			    		}
+			    	else {
+			    		int n = rowsize -1;
+			    		int j = 0;
+				    	
+				    	int start=0;
+				    	if(this.hasRowNames.equals("true")) {
+				    		start=1;
+				    		n--;
+				    	}
+				    	
+				    	global = new double[n];
+				    	for(int i = start; i<n+1; i++) {
+				    		if(i != indextarget) {
+				    			global[j] = (double)line.getDouble(i);
+				    			j++;
+				    		}
+				    	}
 			    	}
 
-			    	LabeledPoint labelpt = new LabeledPoint(finalLabel, Vectors.dense(col));
+			    				    	
+			    	LabeledPoint labelpt = new LabeledPoint(finalLabel, Vectors.dense(global));
 			    	return labelpt;
 			    });
+		
 		return labeldata;
 	}
 
-	
+		
 	public void readR(RenjinScriptEngine engine) throws ScriptException {
 		
 		/*
@@ -364,6 +411,19 @@ public class Data implements Serializable {
 		this.catFeaturesNames = catFeaturesNames;
 	}
 
+	public Map<Integer, Integer> getCategoricalFeaturesInfo() {
+		return categoricalFeaturesInfo;
+	}
+
+
+	public int getNumClasses() {
+		return numClasses;
+	}
+
+
+	public void setNumClasses(int numClasses) {
+		this.numClasses = numClasses;
+	}
 	
 	
 }
