@@ -8,6 +8,8 @@ import akka.japi.Effect;
 //import java.util.List;
 
 import metier.*;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 
 public class test {
 
@@ -16,6 +18,8 @@ public class test {
 	}
 
 	public static void main(String[] args) throws Exception {
+		Logger.getLogger("org").setLevel(Level.OFF);
+		Logger.getLogger("akka").setLevel(Level.OFF);
 		   
 		//create the tree object
 		//RDecisionTree tree = new RDecisionTree("quality~.", "class", 12);
