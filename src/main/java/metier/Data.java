@@ -63,6 +63,10 @@ public class Data implements Serializable {
 		this.catFeaturesNames = catFeaturesNames;
 		
 	}
+	
+	public Data() {
+		
+	}
 
 	
 	/**

@@ -22,7 +22,8 @@ public class RDecisionTree extends RModel {
 	
 	@Override
 	public void fit() throws Exception {
-		String options  = String.join(",", "control=rpart.control(maxdepth="+this.dtree.getMaxDepth(), "minsplit = " + this.dtree.getMinSplit(), "cp="+this.dtree.getCp() + ")", "parms = list(split= '"+ this.dtree.getSplitCrit()+"')");
+		String splitCriteria=this.dtree.isGini()?"gini":"information";
+		String options  = String.join(",", "control=rpart.control(maxdepth="+this.dtree.getMaxDepth(), "minsplit = " + this.dtree.getMinSplit(), "cp="+this.dtree.getCp() + ")", "parms = list(split= '"+ splitCriteria+"')");
 
 		if(this.classif) {
 			options += ",method = '"+"class'";
