@@ -1,12 +1,15 @@
 package metier;
 
-public class DecisionTree {
 
+import java.io.Serializable;
+
+public class DecisionTree implements Serializable{
 	private int maxDepth; // Maximum depth of the tree
 	private int minSplit; //Minimum number of instances  required for splitting
 	private double cp ; // complexity criteria
 	private  boolean gini; //criteria used for splitting
 	private int minPerLeaf; // Minimum number of instances in each leaf
+	private int maxBins; //for SparkML
 	
 	
 	public DecisionTree() {
@@ -15,6 +18,16 @@ public class DecisionTree {
 		this.cp = 0.01d;
 		this.gini = true;
 		this.minPerLeaf=15;
+		this.maxBins = 2;
+	}
+
+	public int getMaxBins() {
+		return maxBins;
+	}
+
+
+	public void setMaxBins(int maxBins) {
+		this.maxBins = maxBins;
 	}
 
 	public int getMaxDepth() {
@@ -50,6 +63,7 @@ public class DecisionTree {
 		this.gini = gini;
 	}
 	
+
 	
 		
 }
