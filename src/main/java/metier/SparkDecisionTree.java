@@ -24,7 +24,7 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 	private String impurity = "gini";
 	private DecisionTreeModel model;
 	private metier.DecisionTree dt;
-	private Boolean classif;
+	private boolean classif;
 	private int numClasses;
 	
 	

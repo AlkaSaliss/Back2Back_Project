@@ -291,12 +291,14 @@ public class Data implements Serializable {
 		/*
 		 * Convert target variable to weka nominal one if we are performing classification
 		 * */
-		if (this.classif) {
+		if (this.classif & data.attribute(targetIndex-1).type()==0 ) {// 0 corresponds to numeric attribute type in weka
+			//& data.attribute(targetIndex).type()==0 is to avoid the error generated when trying to apply numericToNominal on a string attribute
+			
+			System.out.println("Performing classif");
 		
 			NumericToNominal convert= new NumericToNominal();
 	        String[] options= new String[2];
 	        options[0]="-R";
-	       // options[1]= String.valueOf(data.numAttributes()) ;
 	        options[1]= String.valueOf(targetIndex+1) ;
 	        
 	        convert.setOptions(options);
@@ -311,8 +313,8 @@ public class Data implements Serializable {
 		if (this.catFeaturesNames.size()>0){
 			
 			for (String s:this.catFeaturesNames) {
-				
 				int var_index = data.attribute(s).index(); // retrieve the categorical variable index
+				if(data.attribute(var_index-1).type()==0 ){
 			
 				NumericToNominal convert= new NumericToNominal();
 		        String[] options= new String[2];
@@ -321,7 +323,7 @@ public class Data implements Serializable {
 		        convert.setOptions(options);
 		        convert.setInputFormat(data);
 		        data = Filter.useFilter(data, convert);
-			
+				}
 			}
 		}
 		
