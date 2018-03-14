@@ -1,29 +1,22 @@
 package metier;
 
-
-import metier.DecisionTree.splitCriterion;
-
 public class DecisionTree {
 
-	private int maxDepth; // La profondeur de l'arbre
-	private int minSplit; //Nombre minimum d'individus qu'il faut pour diviser une feuille
-	private double cp ; // Critère de complexité
-	private  splitCriterion splitCrit; // Critère utilisée pour calculer l'impurété 
-	private int minPerLeaf; //for weka
+	private int maxDepth; // Maximum depth of the tree
+	private int minSplit; //Minimum number of instances  required for splitting
+	private double cp ; // complexity criteria
+	private  boolean gini; //criteria used for splitting
+	private int minPerLeaf; // Minimum number of instances in each leaf
 	
 	
 	public DecisionTree() {
 		this.maxDepth = 30;
 		this.minSplit = 20;
 		this.cp = 0.01d;
-		this.splitCrit = splitCriterion.gini;
+		this.gini = true;
 		this.minPerLeaf=15;
 	}
 
-	
-	enum splitCriterion{
-		information, gini
-	}
 	public int getMaxDepth() {
 		return maxDepth;
 	}
@@ -42,18 +35,21 @@ public class DecisionTree {
 	public void setCp(double cp) {
 		this.cp = cp;
 	}
-	public splitCriterion getSplitCrit() {
-		return splitCrit;
-	}
-	public void setSplitCrit(splitCriterion splitCrit) {
-		this.splitCrit = splitCrit;
-	}
 	public int getMinPerLeaf() {
 		return minPerLeaf;
 	}
 	public void setMinPerLeaf(int minPerLeaf) {
 		this.minPerLeaf = minPerLeaf;
 	}
+
+	public boolean isGini() {
+		return gini;
+	}
+
+	public void setGini(boolean gini) {
+		this.gini = gini;
+	}
+	
 	
 		
 }
