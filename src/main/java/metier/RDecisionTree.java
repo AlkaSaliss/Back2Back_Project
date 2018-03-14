@@ -15,6 +15,12 @@ public class RDecisionTree extends RModel {
 		super();
 	}
 	
+	public RDecisionTree(Data d, metier.DecisionTree dt, double propTrain) throws Exception {
+		this.setCompleteData(d);
+		this.split(propTrain); //split initial 
+		this.dtree = dt;
+	}
+	
 	public void setCompleteData(Data d) throws Exception {
 		super.setCompleteData(d);
 		this.classif = d.isClassif();

@@ -23,6 +23,13 @@ public class WekaDecisionTree  extends WekaModel{
 		super();
 		
 	}
+	
+	public WekaDecisionTree(Data d, metier.DecisionTree dt, double propTrain) throws Exception {
+		this.setCompleteData(d);
+		this.split(propTrain); //split initial 
+		this.dtree = dt;
+	}
+	
 
 	public void setCompleteData(Data d) throws Exception {
 		super.setCompleteData(d);
