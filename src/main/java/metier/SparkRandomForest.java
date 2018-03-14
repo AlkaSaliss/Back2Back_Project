@@ -47,9 +47,16 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	
 	@Override
 	public void fit() {
-		this.model = RandomForest.trainClassifier(this.train, numClasses,
-				  categoricalFeaturesInfo, numTrees, featureSubsetStrategy, impurity, maxDepth, maxBins,
-				  seed);
+		if(this.classif) {
+			this.model = RandomForest.trainClassifier(this.train, numClasses,
+					  categoricalFeaturesInfo, numTrees, featureSubsetStrategy, impurity, maxDepth, maxBins,
+					  seed);
+		}
+		else {
+			this.model = RandomForest.trainRegressor(this.train,
+					  categoricalFeaturesInfo, numTrees, featureSubsetStrategy, impurity, maxDepth, maxBins,
+					  seed);
+		}
 		
 	}
 
