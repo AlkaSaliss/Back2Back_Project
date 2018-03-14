@@ -6,7 +6,7 @@ import org.renjin.script.RenjinScriptEngineFactory;
 public abstract class RModel implements Model {
 
 	private RenjinScriptEngine engine;
-	private boolean classif; //to speify weither classification or regression
+	
 	
 	public RModel() {
 		
@@ -19,8 +19,6 @@ public abstract class RModel implements Model {
 	//@Override because Model classes were implementing 
 	public void setCompleteData(Data d) throws Exception {
 		d.readR(this.engine);
-		this.classif=d.isClassif();
-
 	}
 	
 	
@@ -41,13 +39,13 @@ public abstract class RModel implements Model {
 		this.engine = engine;
 	}
 
-	public boolean isClassif() {
-		return classif;
-	}
-
-	public void setClassif(boolean classif) {
-		this.classif = classif;
-	}
+//	public boolean isClassif() {
+//		return classif;
+//	}
+//
+//	public void setClassif(boolean classif) {
+//		this.classif = classif;
+//	}
 
 //	//@Override
 //	public void fit() throws Exception {

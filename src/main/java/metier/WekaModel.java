@@ -10,7 +10,7 @@ public abstract class WekaModel implements Model {
 	private Instances completeDataSet;
 	private Instances train;
 	private Instances test;
-	private boolean classif; //to speify weither classification or regression
+	
 
 
 
@@ -26,8 +26,6 @@ public abstract class WekaModel implements Model {
 	@Override
 	public void setCompleteData(Data d) throws Exception {
 			this.completeDataSet = d.readWeka();
-			this.classif=d.isClassif();
-
 	}
 
 	/*
@@ -81,15 +79,15 @@ public abstract class WekaModel implements Model {
 	}
 
 	
-	public boolean isClassif() {
-		return classif;
-	}
-
-
-
-	public void setClassif(boolean classif) {
-		this.classif = classif;
-	}
+//	public boolean isClassif() {
+//		return classif;
+//	}
+//
+//
+//
+//	public void setClassif(boolean classif) {
+//		this.classif = classif;
+//	}
 	
 //	@Override
 //	public void fit() throws Exception {

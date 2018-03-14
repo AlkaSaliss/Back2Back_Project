@@ -10,16 +10,16 @@ public abstract class SparkModel implements Model{
 	JavaRDD<LabeledPoint> completeDataSet;
 	JavaRDD<LabeledPoint> train; 
 	JavaRDD<LabeledPoint> test;
-	Boolean classif;
+//	Boolean classif;
 	Map<Integer, Integer> categoricalFeaturesInfo;
-	int numClasses;
+//	int numClasses;
 	
 	//@Override
 	public void setCompleteData(Data d) {
 		this.completeDataSet = d.readSpark();
-		this.classif = d.isClassif();
+//		this.classif = d.isClassif();
 		this.categoricalFeaturesInfo = d.getCategoricalFeaturesInfo();
-		this.numClasses = d.getNumClasses();
+//		this.numClasses = d.getNumClasses();
 	}
 	
 	@Override
