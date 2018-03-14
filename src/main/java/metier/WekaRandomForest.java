@@ -7,13 +7,19 @@ public class WekaRandomForest extends WekaModel {
 
 	private metier.RandomForest rf = new metier.RandomForest();
 	private RandomForest model = new RandomForest();
-	
+	private boolean classif; //to speify weither classification or regression
 	
 	public WekaRandomForest() {
 //		this.ntree = 500;
 //		this.mtry = 0;
 //		this.sampsize = 70; //percentage of sample from 0 to 100
 	}
+	
+	public void setCompleteData(Data d) throws Exception {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
+	}
+	
 
 	@Override
 	public void fit() throws Exception {
@@ -49,7 +55,7 @@ public class WekaRandomForest extends WekaModel {
 		/*
 		 * the evaluation metric depends on the model type : classif==accuracy and regression==mse
 		 * */
-		if (this.isClassif()) {
+		if (this.classif) {
 		
 		return 1-eval.errorRate();
 		}

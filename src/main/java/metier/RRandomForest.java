@@ -7,12 +7,17 @@ import org.renjin.sexp.DoubleArrayVector;
 public class RRandomForest extends RModel {
 	
 	private RandomForest rf = new RandomForest();
-	
+	private boolean classif; //to speify weither classification or regression
 
 	public RRandomForest() throws Exception {
 		
 		super();
 		
+	}
+	
+	public void setCompleteData(Data d) throws Exception {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
 	}
 
 	@Override
@@ -23,7 +28,7 @@ public class RRandomForest extends RModel {
 		
 		String options  = String.join(",", "mtry=mtry ", "ntree = " + this.rf.getNtrees(), "sampsize=floor(nrow(train)* "+this.rf.getSampsize() + ")");
 		
-		if (this.isClassif()) {
+		if (this.classif) {
 			options += ",type ='classification'";
 		}
 		else {
@@ -39,7 +44,7 @@ public class RRandomForest extends RModel {
 //	@Override
 	public double eval() throws Exception {
 		
-		if (this.isClassif()) {
+		if (this.classif) {
 		this.getEngine().eval("pred <- predict(rf, test, type=\"class\" )");
 		//engine.eval("print(pred)");
 		this.getEngine().eval("confMat <- table(test[,targetName], pred)");

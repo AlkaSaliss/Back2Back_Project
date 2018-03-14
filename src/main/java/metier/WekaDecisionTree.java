@@ -15,7 +15,7 @@ public class WekaDecisionTree  extends WekaModel{
 	//private AbstractClassifier mod= this.isClassif()? new J48(): new M5P(); // When want to use a sigle model object. AbstractClassifier is the super super class for J48 and M5P
 	private J48 classifier= new J48();
 	private M5P regTree= new M5P();
-
+	private boolean classif; //to speify weither classification or regression
 	
 	
 	
@@ -24,10 +24,14 @@ public class WekaDecisionTree  extends WekaModel{
 		
 	}
 
+	public void setCompleteData(Data d) throws Exception {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
+	}
 	
 	//@Override
 	public void fit() throws Exception {
-		if(this.isClassif()) {
+		if(this.classif) {
 			this.classifier.setMinNumObj(this.dtree.getMinPerLeaf());
 			this.classifier.buildClassifier(this.getTrain());
 		}
@@ -42,7 +46,7 @@ public class WekaDecisionTree  extends WekaModel{
 	public double eval() throws Exception {
 		
 		Evaluation eval = new Evaluation(this.getTrain());
-		if(this.isClassif()) {
+		if(this.classif) {
 		eval.evaluateModel(this.classifier, this.getTest());
 		return 1-eval.errorRate();
 		}

@@ -21,11 +21,10 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 	private Integer numTrees = 3; // Use more in practice.
 	//private String featureSubsetStrategy = "auto"; // Let the algorithm choose.
 	private String impurity = "gini";
-	//private Integer maxDepth = 5;
-	//private Integer maxBins = 32;
-	//private Integer seed = 12345;
 	private RandomForestModel model;
 	private metier.RandomForest rf;
+	private Boolean classif;
+	private int numClasses;
 	
 	public SparkRandomForest(Data d, metier.RandomForest rf, double propTrain) throws Exception {
 		this.setCompleteData(d);
@@ -37,6 +36,12 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 		else {
 			this.impurity = "variance";
 		}
+	}
+	
+	public void setCompleteData(Data d) {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
+		this.numClasses = d.getNumClasses();
 	}
 
 //	public void setParameters(Integer numClasses, Map<Integer, Integer> categoricalFeaturesInfo, Integer numTree, String featureSubsetStrategy, 

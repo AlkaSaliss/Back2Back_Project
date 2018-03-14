@@ -7,7 +7,7 @@ import org.renjin.sexp.DoubleArrayVector;
 public class RDecisionTree extends RModel {
 
 	private DecisionTree dtree=new DecisionTree();
-	
+	private boolean classif; //to speify weither classification or regression
 	
 	
 	public RDecisionTree() {
@@ -15,11 +15,16 @@ public class RDecisionTree extends RModel {
 		super();
 	}
 	
+	public void setCompleteData(Data d) throws Exception {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
+	}
+	
 	@Override
 	public void fit() throws Exception {
 		String options  = String.join(",", "control=rpart.control(maxdepth="+this.dtree.getMaxDepth(), "minsplit = " + this.dtree.getMinSplit(), "cp="+this.dtree.getCp() + ")", "parms = list(split= '"+ this.dtree.getSplitCrit()+"')");
 
-		if(this.isClassif()) {
+		if(this.classif) {
 			options += ",method = '"+"class'";
 		}
 		else {
@@ -35,7 +40,7 @@ public class RDecisionTree extends RModel {
 
 	@Override
 	public double eval() throws Exception {
-		if(this.isClassif()) {
+		if(this.classif) {
 		super.getEngine().eval("pred <- predict(dtree, test, type=\"class\" )");
 		//engine.eval("print(pred)");
 		super.getEngine().eval("confMat <- table(test[,targetName], pred)");

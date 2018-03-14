@@ -24,7 +24,8 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 	private String impurity = "gini";
 	private DecisionTreeModel model;
 	private metier.DecisionTree dt;
-	
+	private Boolean classif;
+	private int numClasses;
 	
 	
 	public SparkDecisionTree(Data d, metier.DecisionTree dt, double propTrain) throws Exception {
@@ -39,7 +40,11 @@ public class SparkDecisionTree extends SparkModel implements Serializable{
 		}
 	}
 	
-
+	public void setCompleteData(Data d) {
+		super.setCompleteData(d);
+		this.classif = d.isClassif();
+		this.numClasses = d.getNumClasses();
+	}
 
 	public void fit() {
 		if(this.classif) {
