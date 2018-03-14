@@ -7,7 +7,7 @@ import org.renjin.sexp.DoubleArrayVector;
 public class RRandomForest extends RModel {
 	
 	private RandomForest rf = new RandomForest();
-	private boolean classif; //to speify weither classification or regression
+	private boolean classif; //to specify wether classification or regression
 
 	public RRandomForest() throws Exception {
 		
