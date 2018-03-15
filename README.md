@@ -1,10 +1,11 @@
-# Back2Back_Project
+# Back2Back Project
 
 In this project, we aim to build a tool allowing us to easily launch Back2Back testing for machine learning algorithms. We test here our machine learning algorithm on three different libraries : Weka, Renjin and SparkML.
 
 ## How to launch our project ? 
 
 After cloning the project, the application can be launched with the ```launch.java``` class (in the default package) : 
+
 ```git clone https://github.com/AlkaSaliss/Back2Back_Project.git```
 
 Our application requires to instantiate an object data with all the parameters needed to open the file and apply a model on it. 
