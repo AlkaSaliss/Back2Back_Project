@@ -52,9 +52,10 @@ In this part, we give insights and justifications for our model. First, we give 
 
 * For the project, we have considered only two kinds of machine learning algorithms: decision trees & random forests. The way the code has been structured allows us to easily add new machine learning algorithms (SVM, linear regression, boosting methods, etc.).
 * These two algorithms both treat regression and classification. Hence, we need two kinds of metrics in order to evaluate models. 
+</br>
 <a href="http://www.codecogs.com/eqnedit.php?latex=MSE&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;(Y_i&space;-&space;\hat{Y_i})^2&space;\quad&space;\text{for&space;regression}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?MSE&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;(Y_i&space;-&space;\hat{Y_i})^2&space;\quad&space;\text{for&space;regression}" title="MSE = \frac{1}{n} \sum \limits_{i=1}^n (Y_i - \hat{Y_i})^2 \quad \text{for regression}" /></a>
 </br>
-<a <a href="http://www.codecogs.com/eqnedit.php?latex=Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" title="Accuracy = \frac{1}{n} \sum \limits_{i=1}^n 1_{Y_i \neq \hat{Y_i}} \quad \text{for classification}" /></a> /></a>
+<a href="http://www.codecogs.com/eqnedit.php?latex=Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" title="Accuracy = \frac{1}{n} \sum \limits_{i=1}^n 1_{Y_i \neq \hat{Y_i}} \quad \text{for classification}" /></a> 
 
     Adding more metrics (e.g. *Mean Absolute Error* for regression or *Recall/Precision* for classification) is quite easy.
 * Moreover, for the impurity hyperparameter, we set *Gini* for classification & *Entropy* for regression.
