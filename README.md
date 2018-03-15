@@ -5,7 +5,7 @@ How to launch our project ?
 After cloning the project, the application can be launched with the launch.java class (in the default package). 
 
 Our application requires to specify a few parameters about the dataset and the model before running the launchComparison() method: 
-- Parameters about the dataset: 
+* Parameters about the dataset: 
  - path
  - header (true or false)
  - name of the target, variable to be explained
