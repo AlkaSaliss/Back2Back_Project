@@ -8,8 +8,8 @@ After cloning the project, the application can be launched with the ```launch.ja
 
 ```git clone https://github.com/AlkaSaliss/Back2Back_Project.git```
 
-Our application requires to instantiate an object data with all the parameters needed to open the file and apply a model on it. 
-We then need to instantiate an object DecisionTree or RandomForest. The idea is that with those two objects we can run a DecisionTree/RandomForest on the same dataset with the 3 tested machine learning libraries. However, we can't guarantee the exact same model to be runed by each library because they require different parameters which don't necessarly correspond to the same thing.
+Our application requires to instantiate an data object with all the parameters required to open the file and apply a model on it. 
+We then need to instantiate a ```DecisionTree``` or ```RandomForest``` object. The idea is that with those two objects, we can run a decision tree/random forest on the same dataset with the 3  considered machine learning libraries. However, we can't guarantee the exact same model to be runed by each library, because they require different parameters which don't necessarly correspond to the same thing.
 
 * Parameters about the dataset: 
     * path : path of the file  (*String*)
@@ -37,10 +37,10 @@ We then need to instantiate an object DecisionTree or RandomForest. The idea is 
      * featureSubsetStrategy : type of the random forest algorithm in SparkML (*String*, "auto" by default)
      * gini : split criteria (gini for classifcation problem, variance for regression) (*Boolean* true for gini/classification, false for variance/regression)
    
-We chose in our ```launch.java``` to compare the libraries on a decision tree for a regression problem. 
-The dataset used has been generated randomly for the purpose of the application and doesn't really make any sense. We wanted a dataset with a continuous target and with continuous and categorical features. 
+We have chosen in our ```launch.java``` to compare the libraries on a decision tree for a regression task. 
+The dataset used has been generated randomly for the purpose of the application. We wanted a dataset with a continuous target and with both continuous and categorical features. 
 
-Besides, our application also handle classification problem, we can also apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
+Besides, our application also handle classification problem: we can apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
 
 ### Authors
 
