@@ -57,7 +57,7 @@ In this part, we give insights and justifications for our model. First, we give 
 </br>
 <a href="http://www.codecogs.com/eqnedit.php?latex=Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Accuracy&space;=&space;\frac{1}{n}&space;\sum&space;\limits_{i=1}^n&space;1_{Y_i&space;\neq&space;\hat{Y_i}}&space;\quad&space;\text{for&space;classification}" title="Accuracy = \frac{1}{n} \sum \limits_{i=1}^n 1_{Y_i \neq \hat{Y_i}} \quad \text{for classification}" /></a>
 
-    Adding more metrics (e.g. *Mean Absolute Error* for regression or *Recall/Precision* for classification) is quite easy.
+ Adding more metrics (e.g. *Mean Absolute Error* for regression or *Recall/Precision* for classification) is quite easy.
 * Moreover, for the impurity hyperparameter, we set *Gini* for classification & *Entropy* for regression.
 * In order to deal with data opening, we have chosen to use a ```Data``` class, which holds all needed metadata (e.g. name of the column to predict, if there is a header, the separator etc.), and contains three methods to open data in the formats required by each library. One could easily add other methods for other libraries. This class allows to manipulate only one data object, and mask the intern complexity of libraries' data management.
 * We have implemented a general data model allowing to open any *csv* file, and deal with both categorical and continuous features/target. 
