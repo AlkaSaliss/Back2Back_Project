@@ -1,11 +1,11 @@
 # Back2Back_Project
 
-How to launch our project ? 
+## How to launch our project ? 
 
 After cloning the project, the application can be launched with the launch.java class (in the default package). 
 
 Our application requires to instantiate an object data with all the parameters needed to open the file and apply a model on it. 
-We then need to instantiate an object DecisionTree or RandomForest. The idea is that with those two objects we can run a DecisionTree/RandomForest on the same dataset with the 3 tested machine learning libraries. However, we can't guarantee the exact same model to be runed by each library because they require different parameters.
+We then need to instantiate an object DecisionTree or RandomForest. The idea is that with those two objects we can run a DecisionTree/RandomForest on the same dataset with the 3 tested machine learning libraries. However, we can't guarantee the exact same model to be runed by each library because they require different parameters which don't necessarly correspond to the same thing.
 
 * Parameters about the dataset: 
     * path (*String*)
@@ -31,5 +31,10 @@ We then need to instantiate an object DecisionTree or RandomForest. The idea is 
      * seed : seed to fix the randomn behind the algorithm (*int*)
      * featureSubsetStrategy : type of the random forest algorithm in SparkML (*String*, "auto" by default)
      * gini : split criteria (gini for classifcation problem, variance for regression) (*Boolean* true for gini/classification, false for variance/regression)
+   
+We chose in our launch.java to compare the library on a decision tree for a regression problem. 
+The dataset used has been generated randomly for the purpose of the application and doesn't make any sense. We wanted a dataset with a continuous target and with continuous and categorical features. 
+However, our application handle classification problem, we could also apply a decision tree on the iris dataset (located in data/iris.csv). 
+
 
 
