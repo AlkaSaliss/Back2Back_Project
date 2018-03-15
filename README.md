@@ -36,7 +36,4 @@ We then need to instantiate an object DecisionTree or RandomForest. The idea is 
 We chose in our launch.java to compare the library on a decision tree for a regression problem. 
 The dataset used has been generated randomly for the purpose of the application and doesn't really make any sense. We wanted a dataset with a continuous target and with continuous and categorical features. 
 
-Besides, our application also handle classification problem, we could apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
-
-
-
+Besides, our application also handle classification problem, we can also apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
