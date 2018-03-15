@@ -41,7 +41,7 @@ The dataset used has been generated randomly for the purpose of the application 
 
 Besides, our application also handle classification problem, we can also apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
 
-## Authors
+### Authors
 
 * **ABOUBACAR ALKA Mahamadou Salissou**
 * **FORMAL Thibault**
