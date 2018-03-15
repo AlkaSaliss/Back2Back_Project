@@ -40,3 +40,10 @@ We chose in our ```launch.java``` to compare the libraries on a decision tree fo
 The dataset used has been generated randomly for the purpose of the application and doesn't really make any sense. We wanted a dataset with a continuous target and with continuous and categorical features. 
 
 Besides, our application also handle classification problem, we can also apply a decision tree or a random forest on the iris dataset (located in data/iris.csv). 
+
+## Authors
+
+* **ABOUBACAR ALKA Mahamadou Salissou**
+* **FORMAL Thibault**
+* **GIRARD Naomi**
+* **KEITA Seydou**
