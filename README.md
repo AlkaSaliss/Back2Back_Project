@@ -14,5 +14,6 @@ Our application requires to specify a few parameters about the dataset and the m
  - what are the separator and the decimal in the file ? 
  - Have the dataset some categorical features ? If so, we have to fill a list with the names of the categorical variables.
 
- 
+ * rforfrio
+    * nffn
 
