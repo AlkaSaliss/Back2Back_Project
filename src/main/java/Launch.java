@@ -64,7 +64,7 @@ public class Launch {
 		d.setSep(sep);
 		d.setDec(dec);
 		d.setClassif(classif);
-		d.setNumClasses(3);
+		d.setNumClasses(3); // for classif
 		d.setCatFeaturesNames(catNames);
 
 		application.DecisionTree dt = new DecisionTree();
