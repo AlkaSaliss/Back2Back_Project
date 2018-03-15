@@ -7,7 +7,7 @@ public class WekaRandomForest extends WekaModel {
 	// Attributes
 	private application.RandomForest rf = new application.RandomForest();
 	private RandomForest model = new RandomForest();
-	private boolean classif; //to speify weither classification or regression
+	private boolean classif; //to specify whether classification or regression
 	
 	// Constructor
 	public WekaRandomForest() {

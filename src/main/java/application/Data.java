@@ -336,4 +336,3 @@ public class Data implements Serializable {
 		return serialVersionUID;
 	}
 }
-

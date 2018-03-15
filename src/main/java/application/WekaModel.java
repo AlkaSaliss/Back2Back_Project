@@ -26,7 +26,7 @@ public abstract class WekaModel implements Model {
 		this.test = new Instances(this.completeDataSet, trainSize, testSize);
 	}
 
-
+	// Getters & Setters
 
 	public Instances getCompleteDataSet() {
 		return completeDataSet;
@@ -61,6 +61,4 @@ public abstract class WekaModel implements Model {
 	public void setTest(Instances test) {
 		this.test = test;
 	}
-
-
 }

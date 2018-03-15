@@ -64,4 +64,3 @@ public class SparkRandomForest  extends SparkModel  implements Serializable{
 		}
 	}
 }
-

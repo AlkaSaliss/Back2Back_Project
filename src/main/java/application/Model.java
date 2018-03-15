@@ -16,4 +16,3 @@ public interface Model {
 		return sum_eval/iterations;
 	}
 }
-
