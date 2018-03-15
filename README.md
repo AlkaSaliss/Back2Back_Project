@@ -6,7 +6,7 @@ After cloning the project, the application can be launched with the launch.java 
 
 Our application requires to specify a few parameters about the dataset and the model before running the launchComparison() method: 
 * Parameters about the dataset: 
- * path
+      * path
  - header (true or false)
  - name of the target, variable to be explained
  - what is the goal of the model ? classification or regression ? Is the target categorial or continuous ? 
