@@ -11,7 +11,7 @@ After cloning the project, the application can be launched with the ```launch.ja
 Our application requires to instantiate an data object with all the parameters required to open the file and apply a model on it. 
 We then need to instantiate a ```DecisionTree``` or ```RandomForest``` object. The idea is that with those two objects, we can run a decision tree/random forest on the same dataset with the 3  considered machine learning libraries. However, we can't guarantee the exact same model to be runed by each library, because they require different parameters which don't necessarly correspond to the same thing.
 
-* Parameters about the dataset: 
+* Parameters about the data: 
     * path : path of the file  (*String*)
     * header : does the file have header or not ? (true or false in *String*)
     * targetName : name of the target, the variable to explain (*String*)
@@ -20,14 +20,14 @@ We then need to instantiate a ```DecisionTree``` or ```RandomForest``` object. T
     * hasRowNames : does the file have row names or id ? (should the first column be removed ?) (true or false in *String*)
     * sep, dec : what are the separator and the decimal in the file ? (*String*) 
     * catNames : have the dataset some categorical features ? If so, the user have to fill a list with the names of the categorical variables. (*ArrayList<String>*)
- * Parameters for a DecisionTree:
+ * Parameters for a ```DecisionTree```:
      * maxDepth : maximum depth of the tree (needed for SparkML) (*int*)
      * minSplit : minimum number of instances required for splitting a node (*int*)
      * cp : complexity criteria (*double*)
      * gini : criteria used for splitting (*Boolean* true for gini/classifcation, false for variance/regression)
      * minPerLeaf : minimum number of instances required in each final leaf (*int*)
      * maxBins : number of bins used when discretizing continuous features (*int*)
-  * Parameters for a RandomForest:
+  * Parameters for a ```RandomForest```:
      * ntrees : number of tree to aggregate (*int)
      * mtry : percentage of features to select for each tree (*double*)
      * sampsize : percentage of individuals to select for each tree (*double*)
